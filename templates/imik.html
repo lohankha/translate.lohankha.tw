@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta property="og:url" content="http://lohankha.tw/"/>
+    <meta property="og:title" content="Lohankha台語輸入法(iphone/ipad)"/>
+    <meta property="og:image" content="http://lohankha.tw/static/img/lohankha_wide.png"/>
+    <title>Lohankha外來語音譯器</title>
+    <link rel="shortcut icon" href="/static/img/favicon.ico">
+
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="/blog/feeds/rss/">
+    <link rel="alternate" type="application/atom+xml" title="Atom" href="/blog/feeds/atom/">
+
+    <link rel="stylesheet" href="/static/css/bootstrap.css">
+    <!link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <!link rel="stylesheet" href="/static/css/clean-blog.css">
+    <!link rel="stylesheet" href="/static/css/clean-blog.min.css">
+    <link rel="stylesheet" href="/static/css/mezzanine.css">
+    <link rel="stylesheet" href="/static/css/bootstrap-theme.css">
+
+    <script src="/static/mezzanine/js/jquery-3.4.1.js"></script>
+    <script src="/static/js/bootstrap.js"></script>
+    <script src="/static/js/bootstrap-extras.js"></script>
+
+    <!--[if lt IE 9]>
+    <script src="/static/js/html5shiv.js"></script>
+    <script src="/static/js/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body id="body">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-7 middle">
+          {% block content %}
+	  <p>Lohankha提供台語外來語音譯。請佇下跤輸入欲音譯成做台語的英語。
+          <form class="mezzanine-form" method='POST'>
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="翻譯!" />
+          </form>
+	  <br/>
+	  {% for line in trans.lines %}
+              {{ line|safe }} <br/>
+          {% endfor %}
+          {% endblock %}
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+
+
+

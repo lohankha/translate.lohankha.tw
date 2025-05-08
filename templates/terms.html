@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    {% block content %}
+    <form method='POST'>
+      {% csrf_token %}
+      {{ form.as_p }}
+    <input type="submit" value="search" />
+    </form>
+    <table>
+      <tr>
+        <td>英文條目</td>
+        <td>中文條目</td>
+        <td>日文條目</td>
+        <td>韓文條目</td>
+        <td>參考台譯</td>
+        <td>翻譯根據</td>
+      </tr>
+      {% for w in wd %}
+      <tr>
+        <td>{{ w.en_ori }}</td>
+        <td>{{ w.zh_ori }}</td>
+        <td>{{ w.ja_ori }}</td>
+        <td>{{ w.ko_ori }}</td>
+        <!-- <td><ruby>{{ w.chosen_typ }}<rp>(</rp><rt>{{ w.chosen_typ_lmj }}</rt><rp>)</rp></ruby></td> -->
+        <!-- <td>{{ w.chosen_typ }}({{ w.chosen_typ_lmj }})</td> -->
+        <td>{{ w.chosen_typ_lmj }}<br />{{ w.chosen_typ }}</td>
+        <td>
+          {% if w.pri.1 == "0" %}
+          無譯
+          {% elif w.pri.1 == "1" and w.pri.2 != "0" %}
+          英文(舊譯名優先)
+          {% elif w.pri.1 == "2" %}
+          英文(全新音譯)
+          {% elif w.pri.1 == "3" %}
+          中日韓通用漢字詞
+          {% elif w.pri.1 == "4" %}
+          中日通用漢字詞
+          {% elif w.pri.1 == "5" %}
+          中韓通用漢字詞
+          {% elif w.pri.1 == "6" %}
+          日韓通用漢字詞
+          {% elif w.pri.1 == "7" %}
+          中文漢字詞
+          {% elif w.pri.1 == "8" %}
+          日文漢字詞
+          {% elif w.pri.1 == "9" %}
+          韓文漢字詞
+          {% else %}
+          中文
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% endblock %}
+  </body>
+</html>

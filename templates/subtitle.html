@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="華語, 台語, 翻譯">
+    <meta name="description" content="提供華語翻譯做台語的服務">
+    <meta property="og:url" content="http://lohankha.tw/"/>
+    <meta property="og:title" content="Lohankha Translate - 台語翻譯"/>
+    <meta property="og:image" content="http://lohankha.tw/static/img/lohankha_wide.png"/>
+    <title>Lohankha Translate - 台語翻譯</title>
+    <link rel="shortcut icon" href="/static/img/favicon.ico">
+
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="/blog/feeds/rss/">
+    <link rel="alternate" type="application/atom+xml" title="Atom" href="/blog/feeds/atom/">
+
+    <link rel="stylesheet" href="/static/css/bootstrap.css">
+    <!link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <!link rel="stylesheet" href="/static/css/clean-blog.css">
+    <!link rel="stylesheet" href="/static/css/clean-blog.min.css">
+    <link rel="stylesheet" href="/static/css/mezzanine.css">
+    <link rel="stylesheet" href="/static/css/bootstrap-theme.css">
+
+    <script src="/static/mezzanine/js/jquery-3.4.1.js"></script>
+    <script src="/static/js/bootstrap.js"></script>
+    <script src="/static/js/bootstrap-extras.js"></script>
+
+    <!--[if lt IE 9]>
+    <script src="/static/js/html5shiv.js"></script>
+    <script src="/static/js/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body id="body">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-7 middle">
+          <ul class="nav nav-tabs">
+            <li class="nav-item">
+              <a class="nav-link" href="..">翻譯文字</a>
+            </li>
+            <li class="active">
+              <a class="nav-link active" aria-current="page" href="#">翻譯字幕</a>
+            </li>
+          </ul>
+          {% block content %}
+	  <p>Lohankha提供華語-&gt;台語機器翻譯字幕。
+          <form class="mezzanine-form" method='POST' enctype="multipart/form-data" id="uploadForm">
+            {% csrf_token %}
+            {{ hanmodform.as_p }}
+            {{ lmjmodform.as_p }}
+            {{ outmodform.as_p }}
+	    {{ form.as_p }}
+	    <p id="file-result"></p>
+            <input type="submit" value="Upload!" accept=".srt" id="file-submit" disabled/>
+          </form>
+          {% endblock %}
+        </div>
+      </div>
+      <p></p>
+      <p></p>
+      <p></p>
+      <p><br/><br/><br/>機器翻譯袂當保證結果100%正確，請配合人工校對。</p>
+      <p>任何問題請到Facebook迷眾頁<a href="https://www.facebook.com/share/p/1WNZbVVcy7/">留話</a></p>
+      <p>協力：<a href="https://taigi.fhl.net">財團法人信望愛資訊文化藝術基金會</a></p>
+    </div>
+<script>
+let fileInput = document.getElementById("id_file");
+let fileResult = document.getElementById("file-result");
+let fileSubmit = document.getElementById("file-submit");
+fileInput.addEventListener("change", function() {
+    if (fileInput.files.length > 0) {
+        const fileSize = fileInput.files.item(0).size;
+        const fileMb = fileSize / 1024 ** 2;
+        if (fileMb >= 1) {
+          fileResult.innerHTML = "檔案大小袂當超過1MB！";
+          fileSubmit.disabled = true;
+        } else {
+          fileResult.innerHTML = "";
+          fileSubmit.disabled = false;
+        }
+    }
+});
+</script>
+  </body>
+</html>
