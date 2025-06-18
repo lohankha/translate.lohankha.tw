@@ -1,12 +1,10 @@
-from django.conf.urls import url
+from django.urls import path
 
 from . import views
 
 urlpatterns = [
-    url(r'^$', views.index, name='index'),
-    url(r'terms/', views.terms, name='terms'),
-    url(r'homophonic/', views.imik, name='imik'),
-    url(r'subtitle/', views.subtitle, name='subtitle'),
+    path('', views.index, name='index'),
+    path('terms/', views.terms, name='terms'),
+    path('homophonic/', views.imik, name='imik'),
+    path('subtitle/', views.subtitle, name='subtitle'),
 ]
-
-

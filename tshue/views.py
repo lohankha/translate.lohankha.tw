@@ -1,15 +1,17 @@
+import json
+import os
+import socket
+
+from django.http import (FileResponse, HttpResponse, HttpResponseRedirect,
+                         JsonResponse, StreamingHttpResponse)
 from django.shortcuts import render
 from django.template import RequestContext
-
-# Create your views here.
-from django.http import HttpResponse, HttpResponseRedirect, FileResponse, StreamingHttpResponse
 from django.urls import reverse
 
+from .forms import (InputModForm, OutputModForm, SearchForm, SearchImikForm,
+                    SearchTermForm, TranslationAPIHelper, UploadFileForm)
 from .models import WikiData
-from .forms import SearchForm, SearchTermForm, HanModForm, LmjModForm, UploadFileForm, SearchImikForm, OutModForm
-import socket
-import os
-from django_ratelimit.decorators import ratelimit
+
 
 def getClientIP(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
@@ -19,7 +21,6 @@ def getClientIP(request):
        ip = request.META.get('REMOTE_ADDR')
     return ip
 
-@ratelimit(key='user_or_ip', rate='100/h')
 def index(request):
     form = SearchForm(request.POST or None)
     if form.is_valid():
@@ -27,20 +28,28 @@ def index(request):
     else:
         key = ''
 
-    hanmodform = HanModForm(request.POST or None)
-    if hanmodform.is_valid():
-        hanmod = hanmodform.cleaned_data['hanmod']
+    input_lang_form = InputModForm(request.POST or None)
+    if input_lang_form.is_valid():
+        input_lang = input_lang_form.cleaned_data['input_lang']
     else:
-        hanmod = '0'
+        input_lang = 'zh-tw' # defult
 
-    lmjmodform = LmjModForm(request.POST or None)
-    if lmjmodform.is_valid():
-        lmjmod = lmjmodform.cleaned_data['lmjmod']
+    output_format_form = OutputModForm(input_lang=input_lang, data=request.POST or None)
+    if output_format_form.is_valid():
+        output_format = output_format_form.cleaned_data['output_format']
     else:
-        lmjmod = '0'
+        # default output format based on input language
+        output_options = TranslationAPIHelper.get_output_options(input_lang)
+        output_format = output_options[0][0] if output_options else 'tai-han'
 
     lines = []
-    if key:
+    api_params = {}
+    
+    if key and input_lang and output_format:
+        # generate API parameters based on input language and output format
+        api_params = TranslationAPIHelper.get_api_params(input_lang, output_format, key)
+        
+        # TODO: use new API parameters format
         import socket
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.connect(("localhost", 9999))
@@ -89,6 +98,22 @@ def index(request):
                 continue
             else:
                 if not isSent:
+                    # TODO: use new API parameters format
+                    cmd = api_params.get('cmd', 'H2T')
+                    lang = api_params.get('lang', '')
+                    hanjimod = api_params.get('hanjimod', 1)
+                    outmod = api_params.get('outmod', 1)
+                    
+                    # old format handling
+                    if cmd == 'H2T':
+                        hanmod = '1' if input_lang == 'zh-tw' else '0'
+                    elif cmd == 'G2T':
+                        hanmod = lang
+                    else:
+                        hanmod = '0'
+                    
+                    lmjmod = '0' if output_format == 'tai-han' else '1'
+                    
                     string = "TRANSLATE%s%s0 %s" % (hanmod, lmjmod, key.replace('\r\n', '\n'))
                     sock.sendall(string.encode())
                     isSent = True
@@ -109,8 +134,11 @@ def index(request):
     context = {
         'trans': {'lines': lines},
         'form': form,
-        'hanmodform': hanmodform,
-        'lmjmodform': lmjmodform,
+        'input_lang_form': input_lang_form,
+        'output_format_form': output_format_form,
+        'api_params': api_params, # debug
+        'input_lang': input_lang,
+        'output_format': output_format,
     }
     return render(request, 'index.html', context)
 
@@ -228,6 +256,7 @@ def isSRT(filename):
 
 import datetime as dt
 
+
 def getRendered(uid, sock, hanmod, lmjmod, outmod, filename, ip):
     fn = "/tmp/%s" % uid
     fn2 = "/tmp/%s.out" % uid
@@ -304,17 +333,18 @@ def getRendered(uid, sock, hanmod, lmjmod, outmod, filename, ip):
     sock.close()
 
 def subtitle(request):
-    hanmodform = HanModForm(request.POST or None)
-    if hanmodform.is_valid():
-        hanmod = hanmodform.cleaned_data['hanmod']
+    input_lang_form = InputModForm(request.POST or None)
+    if input_lang_form.is_valid():
+        input_lang = input_lang_form.cleaned_data['input_lang']
     else:
-        hanmod = '0'
+        input_lang = 'zh-tw'
 
-    lmjmodform = LmjModForm(request.POST or None)
-    if lmjmodform.is_valid():
-        lmjmod = lmjmodform.cleaned_data['lmjmod']
+    output_format_form = OutputModForm(input_lang=input_lang, data=request.POST or None)
+    if output_format_form.is_valid():
+        output_format = output_format_form.cleaned_data['output_format']
     else:
-        lmjmod = '0'
+        output_options = TranslationAPIHelper.get_output_options(input_lang)
+        output_format = output_options[0][0] if output_options else 'tai-han'
 
     outmodform = OutModForm(request.POST or None)
     if outmodform.is_valid():
@@ -325,8 +355,8 @@ def subtitle(request):
     if request.method == "POST":
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
-            import uuid
             import random
+            import uuid
             uid = "%s" % uuid.uuid4()
 
             import socket
@@ -344,10 +374,23 @@ def subtitle(request):
             if ret:
                 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
                 sock.connect(("localhost", 9999+random.randint(1,4)))
+                # generate API parameters based on input language and output format
+                api_params = TranslationAPIHelper.get_api_params(input_lang, output_format, "dummy")
+                # convert to old format
+                if api_params.get('cmd') == 'H2T':
+                    hanmod = '1' if input_lang == 'zh-tw' else '0'
+                elif api_params.get('cmd') == 'G2T':
+                    hanmod = api_params.get('lang', 'en')
+                else:
+                    hanmod = '0'
+                
+                lmjmod = '0' if output_format == 'tai-han' else '1'
+                
                 response = StreamingHttpResponse(getRendered(uid, sock, hanmod, lmjmod, outmod, the_file.name, ip))
                 response['Content-Disposition'] = "attachment; filename*=UTF-8''%s" % urllib.parse.quote(the_file.name)
                 return response
             else:
+                tic = dt.datetime.now()
                 ff = open("/var/log/trans.log", "a")
                 print("IP: %s" % ip, file=ff)
                 print("Time start: %s" % tic, file=ff)
@@ -365,8 +408,8 @@ def subtitle(request):
 
     context = {
         'form': form,
-        'hanmodform': hanmodform,
-        'lmjmodform': lmjmodform,
+        'input_lang_form': input_lang_form,
+        'output_format_form': output_format_form,
         'outmodform': outmodform,
     }
     return render(request, "subtitle.html", context)

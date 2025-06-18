@@ -1,72 +1,372 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
-    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="keywords" content="華語, 台語, 翻譯">
-    <meta name="description" content="提供華語翻譯做台語的服務">
-    <meta property="og:url" content="http://lohankha.tw/"/>
-    <meta property="og:title" content="Lohankha Translate - 台語翻譯"/>
-    <meta property="og:image" content="http://lohankha.tw/static/img/lohankha_wide.png"/>
-    <title>Lohankha Translate - 台語翻譯</title>
-    <link rel="shortcut icon" href="/static/img/favicon.ico">
 
-    <link rel="alternate" type="application/rss+xml" title="RSS" href="/blog/feeds/rss/">
-    <link rel="alternate" type="application/atom+xml" title="Atom" href="/blog/feeds/atom/">
+<head>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="keywords" content="華語, 台語, 翻譯">
+  <meta name="description" content="提供華語翻譯做台語的服務">
+  <meta property="og:url" content="https://lohankha.tw/" />
+  <meta property="og:title" content="Lohankha Translate - 台語翻譯" />
+  <meta property="og:image" content="https://lohankha.tw/static/img/lohankha_wide.png" />
+  <title>Lohankha Translate - 台語翻譯</title>
+  <link rel="shortcut icon" href="/static/img/favicon.ico">
 
-    <link rel="stylesheet" href="/static/css/bootstrap.css">
-    <!link rel="stylesheet" href="/static/css/bootstrap.min.css">
-    <!link rel="stylesheet" href="/static/css/clean-blog.css">
-    <!link rel="stylesheet" href="/static/css/clean-blog.min.css">
-    <link rel="stylesheet" href="/static/css/mezzanine.css">
-    <link rel="stylesheet" href="/static/css/bootstrap-theme.css">
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/blog/feeds/rss/">
+  <link rel="alternate" type="application/atom+xml" title="Atom" href="/blog/feeds/atom/">
 
-    <script src="/static/mezzanine/js/jquery-3.4.1.js"></script>
-    <script src="/static/js/bootstrap.js"></script>
-    <script src="/static/js/bootstrap-extras.js"></script>
+  <link rel="stylesheet" href="/static/css/font.css">
 
-    <!--[if lt IE 9]>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+  <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/static/js/translation-form.js"></script>
+
+  <!--
+          <link rel="stylesheet" href="/static/css/bootstrap.css">
+          <link rel="stylesheet" href="/static/css/bootstrap-theme.css">
+          <script src="/static/mezzanine/js/jquery-3.4.1.js"></script>
+          <script src="/static/js/bootstrap.js"></script>
+        -->
+
+  <!--[if lt IE 9]>
     <script src="/static/js/html5shiv.js"></script>
     <script src="/static/js/respond.min.js"></script>
     <![endif]-->
-  </head>
-  <body id="body">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-7 middle">
-          <ul class="nav nav-tabs">
-            <li class="active">
-              <a class="nav-link active" aria-current="page" href="#">翻譯文字</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="subtitle">翻譯字幕</a>
-            </li>
-          </ul>
-          {% block content %}
-	  <p>
-	  <p>Lohankha提供華語-&gt;台語機器翻譯。請佇下跤輸入欲翻譯的華語。
-          <form class="mezzanine-form" method='POST'>
-            {% csrf_token %}
-            {{ hanmodform.as_p }}
-            {{ lmjmodform.as_p }}
-            {{ form.as_p }}
-            <input type="submit" value="翻譯!" />
-          </form>
-	  {% for line in trans.lines %}
-              {{ line }} <br/>
-          {% endfor %}
-          {% endblock %}
-        </div>
+
+  <style>
+    .char-count {
+      bottom: 8px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(4px);
+      z-index: 10;
+      pointer-events: none;
+      user-select: none;
+      transition: all 0.2s ease-in-out;
+    }
+
+    .char-count.text-warning {
+      color: #f57c00 !important;
+      background: rgba(255, 248, 225, 0.95);
+      border-color: rgba(245, 124, 0, 0.2);
+    }
+
+    .char-count.text-danger {
+      color: #d32f2f !important;
+      background: rgba(255, 242, 242, 0.95);
+      border-color: rgba(211, 47, 47, 0.2);
+    }
+
+    .position-relative textarea {
+      padding-bottom: 35px !important;
+    }
+
+    /* fix floating label issue */
+    #resultTextarea:placeholder-shown+label {
+      transform: scale(1) translateY(0) translateX(0);
+      color: #6c757d;
+    }
+
+    #resultTextarea:not(:placeholder-shown)+label {
+      transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+      color: #6c757d;
+    }
+
+    /* translate button loading spinner */
+    .spinner-border-sm {
+      width: 0.875rem;
+      height: 0.875rem;
+      animation: spinner-border 0.75s linear infinite;
+    }
+
+    @keyframes spinner-border {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    #resultTextarea.has-content+label {
+      transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+      color: #6c757d;
+    }
+  </style>
+</head>
+
+<body id="body">
+  <div class="container">
+    <div class="row">
+      <div class="my-3">
+        <ul class="nav nav-tabs mb-3">
+          <h4 class="col-md-6 mt-1">Lohankha Translate - 台語翻譯</h4>
+          <li class="col-md-2 ms-auto nav-item text-center active">
+            <a class="nav-link active" aria-current="page" href="#">翻譯文字</a>
+          </li>
+          <li class="col-md-2 nav-item text-center">
+            <a class="nav-link" href="subtitle">翻譯字幕</a>
+          </li>
+        </ul>
+        {% block content %}
+        <form class="mezzanine-form" method='POST'>
+          {% csrf_token %}
+          <div class="row">
+            <div class="form-floating col-md-6 mb-3 pe-0">
+              {{ input_lang_form.input_lang }}
+              <label class="ps-4" for="{{ input_lang_form.input_lang.id_for_label }}">
+                {{ input_lang_form.input_lang.label }}</label>
+            </div>
+            <div class="form-floating col-md-6 mb-3 pe-0">
+              {{ output_format_form.output_format }}
+              <label class="ps-4" for="{{ output_format_form.output_format.id_for_label }}">
+                {{ output_format_form.output_format.label }}</label>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="form-floating col-md-6 mb-3 pe-0 position-relative">
+              {{ form.key }}
+              <label for="floatingTextarea" class="ms-2">{{ form.key.label }}</label>
+              <div class="char-count position-absolute text-muted small">0 / 500</div>
+            </div>
+
+            <div class="form-floating col-md-6 mb-3 pe-0">
+              <textarea disabled name="result" cols="40" rows="5" class="form-control" id="resultTextarea"
+                style="height: 150px;" placeholder=" ">{% for line in trans.lines %}{{ line }}{% if not forloop.last %}
+{% endif %}{% endfor %}</textarea>
+              <label for="resultTextarea" class="ms-2">翻譯結果</label>
+            </div>
+          </div>
+          <div class="row g-2">
+            <div class="col-6 col-md-1">
+              <button type="button" class="btn btn-outline-secondary w-100" id="translateButton"
+                onclick="mirrorTranslation()">
+                <i class="bi bi-translate"></i>
+              </button>
+            </div>
+            <div class="col-6 col-md-1 ms-auto">
+              <button type="button" class="btn btn-outline-secondary w-100" id="copyButton" onclick="copyResult()">
+                <i class="bi bi-copy"></i>
+              </button>
+            </div>
+          </div>
+        </form>
+
+        {% endblock %}
       </div>
-      <p></p>
-      <p></p>
-      <p></p>
-      <p><br/><br/><br/>機器翻譯袂當保證結果100%正確，請配合人工校對。</p>
-      <p>任何問題請到Facebook迷眾頁<a href="https://www.facebook.com/share/p/1WNZbVVcy7/">留話</a></p>
-      <p>協力：<a href="https://taigi.fhl.net">財團法人信望愛資訊文化藝術基金會</a></p>
     </div>
-  </body>
+
+
+
+    <div class="translate-footer my-3 text-center">
+      <p>Lohankha 提供 華語 -&gt; 台語 機器翻譯。</p>
+      <p>機器翻譯袂當保證結果 100% 正確，請配合人工校對。</p>
+      <p>任何問題請到 <a href="https://www.facebook.com/share/p/1WNZbVVcy7/"
+          class="link-underline link-underline-opacity-0 link-underline-opacity-75-hover" target="_blank">Facebook
+          迷眾頁留話</a></p>
+      <p>協力 <a href="https://taigi.fhl.net"
+          class="link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
+          target="_blank">財團法人信望愛資訊文化藝術基金會</a></p>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const textarea = document.querySelector('textarea[name="key"]');
+      const charCount = document.querySelector('.char-count');
+
+      function updateCharCount() {
+        if (textarea && charCount) {
+          const length = textarea.value.length;
+          charCount.textContent = `${length} / 500`;
+
+          // close to 450 characters: yellow, close to 500 characters: red
+          if (length >= 500) {
+            charCount.classList.add('text-danger');
+            charCount.classList.remove('text-warning', 'text-muted');
+          } else if (length > 450) {
+            charCount.classList.add('text-warning');
+            charCount.classList.remove('text-danger', 'text-muted');
+          } else {
+            charCount.classList.add('text-muted');
+            charCount.classList.remove('text-warning', 'text-danger');
+          }
+        }
+      }
+
+      if (textarea) {
+        textarea.addEventListener('input', updateCharCount);
+        updateCharCount();
+      }
+
+      var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+      var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+      });
+
+      // fix floating label issue for resultTextarea
+      const resultTextarea = document.getElementById('resultTextarea');
+      if (resultTextarea) {
+        // check if resultTextarea has content
+        function updateFloatingLabel() {
+          const hasContent = resultTextarea.value && resultTextarea.value.trim().length > 0;
+          if (!hasContent) {
+            // no content, ensure floating label does not float
+            resultTextarea.classList.remove('is-valid', 'is-invalid');
+            resultTextarea.removeAttribute('data-filled');
+          }
+        }
+
+        // initialize floating label
+        updateFloatingLabel();
+      }
+    });
+
+    function showTooltip(element, message, type = 'error') {
+      element.setAttribute('data-bs-original-title', message);
+      element.setAttribute('title', message);
+      element.setAttribute('data-bs-toggle', 'tooltip');
+      element.setAttribute('data-bs-placement', 'left');
+
+      if (type === 'success') {
+        element.classList.add('btn-success');
+        element.classList.remove('btn-outline-secondary', 'btn-danger');
+      } else if (type === 'error') {
+        element.classList.add('btn-danger');
+        element.classList.remove('btn-outline-secondary', 'btn-success');
+      }
+
+      let tooltip = bootstrap.Tooltip.getOrCreateInstance(element);
+      tooltip.show();
+
+      setTimeout(function () {
+        tooltip.hide();
+        element.classList.remove('btn-success', 'btn-danger');
+        element.classList.add('btn-outline-secondary');
+        element.removeAttribute('data-bs-original-title');
+        element.removeAttribute('title');
+        element.removeAttribute('data-bs-toggle');
+        element.removeAttribute('data-bs-placement');
+      }, 3000);
+    }
+
+    function copyResult() {
+      const resultTextarea = document.getElementById('resultTextarea');
+
+      if (!resultTextarea) {
+        showTooltip(document.getElementById('copyButton'), 'Translation result not found', 'error');
+        return;
+      }
+
+      const textToCopy = resultTextarea.value.trim();
+
+      if (!textToCopy) {
+        showTooltip(document.getElementById('copyButton'), 'No translation result to copy', 'error');
+        return;
+      }
+
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(textToCopy).then(function () {
+          showCopySuccess();
+        }).catch(function (err) {
+          fallbackCopyTextToClipboard(textToCopy);
+        });
+      } else {
+        fallbackCopyTextToClipboard(textToCopy);
+      }
+    }
+
+    function fallbackCopyTextToClipboard(text) {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+
+      // avoid monitor flicker
+      textArea.style.top = "0";
+      textArea.style.left = "0";
+      textArea.style.position = "fixed";
+
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+
+      try {
+        const successful = document.execCommand('copy');
+        if (successful) {
+          showCopySuccess();
+        } else {
+          showCopyError();
+        }
+      } catch (err) {
+        showCopyError();
+      }
+
+      document.body.removeChild(textArea);
+    }
+
+    function showCopySuccess() {
+      const copyButton = document.getElementById('copyButton');
+      const originalHTML = copyButton.innerHTML;
+
+      copyButton.innerHTML = '<i class="bi bi-check-circle me-1"></i>';
+      showTooltip(copyButton, 'Translation result copied to clipboard', 'success');
+
+      setTimeout(function () {
+        copyButton.innerHTML = originalHTML;
+      }, 2000);
+    }
+
+    function showCopyError() {
+      const copyButton = document.getElementById('copyButton');
+      showTooltip(copyButton, 'Copy failed, please manually select and copy text', 'error');
+    }
+
+    function mirrorTranslation() {
+      const inputTextarea = document.querySelector('textarea[name="key"]');
+      const resultTextarea = document.getElementById('resultTextarea');
+      const translateButton = document.getElementById('translateButton');
+
+      if (!inputTextarea || !resultTextarea) {
+        showTooltip(translateButton, 'Translation areas not found', 'error');
+        return;
+      }
+
+      const inputText = inputTextarea.value.trim();
+
+      if (!inputText) {
+        showTooltip(translateButton, 'Please enter text to translate', 'error');
+        return;
+      }
+
+      // Temporarily disable the button and show loading state
+      const originalHTML = translateButton.innerHTML;
+      translateButton.disabled = true;
+      translateButton.innerHTML = '<i class="spinner-border spinner-border-sm"></i>';
+
+      // Simulate API delay
+      setTimeout(function () {
+        // Mirror (reverse) the input text to the result
+        const reversedText = inputText.split('').reverse().join('');
+        resultTextarea.value = reversedText;
+
+        // Re-enable the button
+        translateButton.disabled = false;
+        translateButton.innerHTML = originalHTML;
+
+        // Show success tooltip
+        showTooltip(translateButton, 'Translation completed', 'success');
+
+        // Update floating label state for result textarea
+        if (resultTextarea.value.trim().length > 0) {
+          resultTextarea.classList.add('has-content');
+        }
+      }, 1000); // 1 second delay to simulate API call
+    }
+  </script>
+</body>
+
 </html>
-
-
-
