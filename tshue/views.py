@@ -2,16 +2,108 @@ import json
 import os
 import socket
 
+import requests
 from django.http import (FileResponse, HttpResponse, HttpResponseRedirect,
                          JsonResponse, StreamingHttpResponse)
 from django.shortcuts import render
 from django.template import RequestContext
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 
 from .forms import (InputModForm, OutputModForm, SearchForm, SearchImikForm,
                     SearchTermForm, TranslationAPIHelper, UploadFileForm)
 from .models import WikiData
 
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def translation_proxy(request):
+    """
+    Proxy endpoint for translation API to handle CORS issues
+    """
+    try:
+        # Get form data from request
+        input_lang = request.POST.get('input_lang')
+        output_format = request.POST.get('output_format') 
+        input_text = request.POST.get('key')  # Frontend sends 'key' parameter
+        
+        print(f"DEBUG: Received parameters:")
+        print(f"  input_lang: {input_lang}")
+        print(f"  output_format: {output_format}")
+        print(f"  input_text: {input_text}")
+        
+        if not all([input_lang, output_format, input_text]):
+            missing = []
+            if not input_lang: missing.append('input_lang')
+            if not output_format: missing.append('output_format')
+            if not input_text: missing.append('input_text')
+            
+            return JsonResponse({
+                'success': False,
+                'error': f'Missing required parameters: {", ".join(missing)}'
+            }, status=400)
+        
+        # Generate API parameters using helper
+        api_params = TranslationAPIHelper.get_api_params(input_lang, output_format, input_text)
+        
+        print(f"DEBUG: Generated API parameters: {api_params}")
+        
+        # Make request to translation API
+        api_url = 'http://lohankha.tw:10999'
+        response = requests.post(
+            api_url,
+            data=api_params,
+            headers={'Content-Type': 'application/x-www-form-urlencoded'},
+            timeout=30
+        )
+        
+        print(f"DEBUG: API response status: {response.status_code}")
+        print(f"DEBUG: API response content: {response.text[:200]}...")
+        
+        if response.status_code == 200:
+            # Parse the API response
+            try:
+                result_data = response.json()
+                return JsonResponse({
+                    'success': True,
+                    'result': result_data
+                })
+            except json.JSONDecodeError:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Invalid JSON response from translation API'
+                }, status=500)
+        else:
+            return JsonResponse({
+                'success': False,
+                'error': f'API request failed with status {response.status_code}',
+                'details': response.text[:200]
+            }, status=response.status_code)
+            
+    except requests.RequestException as e:
+        print(f"DEBUG: Network error: {str(e)}")
+        return JsonResponse({
+            'success': False,
+            'error': f'Network error: {str(e)}'
+        }, status=500)
+    except Exception as e:
+        print(f"DEBUG: Server error: {str(e)}")
+        return JsonResponse({
+            'success': False,
+            'error': f'Server error: {str(e)}'
+        }, status=500)
+            
+    except requests.RequestException as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': f'Network error: {str(e)}'
+        }, status=500)
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error', 
+            'message': f'Server error: {str(e)}'
+        }, status=500)
 
 def getClientIP(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
@@ -346,9 +438,9 @@ def subtitle(request):
         output_options = TranslationAPIHelper.get_output_options(input_lang)
         output_format = output_options[0][0] if output_options else 'tai-han'
 
-    outmodform = OutModForm(request.POST or None)
+    outmodform = OutputModForm(request.POST or None)
     if outmodform.is_valid():
-        outmod = outmodform.cleaned_data['outmod']
+        outmod = outmodform.cleaned_data['output_format']
     else:
         outmod = '0'
 

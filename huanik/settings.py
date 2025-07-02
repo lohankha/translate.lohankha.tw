@@ -35,6 +35,7 @@ ALLOWED_HOSTS = ['translate.lohankha.tw', 'localhost', '127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders',
     'tshue.apps.TshueConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -46,6 +47,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -144,4 +146,17 @@ CACHES = {
 
 # Optional: This is to ensure Django sessions are stored in Redis
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+
+# CORS settings for local development
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "https://translate.lohankha.tw",
+]
+
+# Allow all origins during development (less secure but convenient)
+CORS_ALLOW_ALL_ORIGINS = DEBUG
+
+# Allow credentials to be included in CORS requests
+CORS_ALLOW_CREDENTIALS = True
 SESSION_CACHE_ALIAS = 'default'

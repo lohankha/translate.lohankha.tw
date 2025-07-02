@@ -23,18 +23,6 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
   <script src="/static/js/translation-form.js"></script>
 
-  <!--
-          <link rel="stylesheet" href="/static/css/bootstrap.css">
-          <link rel="stylesheet" href="/static/css/bootstrap-theme.css">
-          <script src="/static/mezzanine/js/jquery-3.4.1.js"></script>
-          <script src="/static/js/bootstrap.js"></script>
-        -->
-
-  <!--[if lt IE 9]>
-    <script src="/static/js/html5shiv.js"></script>
-    <script src="/static/js/respond.min.js"></script>
-    <![endif]-->
-
   <style>
     .char-count {
       bottom: 8px;
@@ -145,7 +133,7 @@
           <div class="row g-2">
             <div class="col-6 col-md-1">
               <button type="button" class="btn btn-outline-secondary w-100" id="translateButton"
-                onclick="mirrorTranslation()">
+                onclick="submitTranslation()">
                 <i class="bi bi-translate"></i>
               </button>
             </div>
@@ -160,8 +148,6 @@
         {% endblock %}
       </div>
     </div>
-
-
 
     <div class="translate-footer my-3 text-center">
       <p>Lohankha 提供 華語 -&gt; 台語 機器翻譯。</p>
@@ -201,37 +187,28 @@
 
       if (textarea) {
         textarea.addEventListener('input', updateCharCount);
+        textarea.addEventListener('paste', function () {
+          setTimeout(updateCharCount, 0);
+        });
         updateCharCount();
       }
 
-      var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-      var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
-      });
+      const inputLangSelect = document.getElementById('inputLangSelect');
+      const outputFormatSelect = document.getElementById('outputFormatSelect');
 
-      // fix floating label issue for resultTextarea
-      const resultTextarea = document.getElementById('resultTextarea');
-      if (resultTextarea) {
-        // check if resultTextarea has content
-        function updateFloatingLabel() {
-          const hasContent = resultTextarea.value && resultTextarea.value.trim().length > 0;
-          if (!hasContent) {
-            // no content, ensure floating label does not float
-            resultTextarea.classList.remove('is-valid', 'is-invalid');
-            resultTextarea.removeAttribute('data-filled');
+      if (inputLangSelect && outputFormatSelect) {
+        inputLangSelect.addEventListener('change', function () {
+          if (typeof updateOutputOptions === 'function') {
+            updateOutputOptions();
           }
-        }
-
-        // initialize floating label
-        updateFloatingLabel();
+        });
       }
     });
 
-    function showTooltip(element, message, type = 'error') {
-      element.setAttribute('data-bs-original-title', message);
-      element.setAttribute('title', message);
+    function showTooltip(element, message, type = 'success') {
       element.setAttribute('data-bs-toggle', 'tooltip');
-      element.setAttribute('data-bs-placement', 'left');
+      element.setAttribute('data-bs-placement', 'top');
+      element.setAttribute('data-bs-original-title', message);
 
       if (type === 'success') {
         element.classList.add('btn-success');
@@ -310,13 +287,10 @@
 
     function showCopySuccess() {
       const copyButton = document.getElementById('copyButton');
-      const originalHTML = copyButton.innerHTML;
-
-      copyButton.innerHTML = '<i class="bi bi-check-circle me-1"></i>';
       showTooltip(copyButton, 'Translation result copied to clipboard', 'success');
 
-      setTimeout(function () {
-        copyButton.innerHTML = originalHTML;
+      setTimeout(() => {
+        copyButton.innerHTML = '<i class="bi bi-copy"></i>';
       }, 2000);
     }
 
@@ -325,13 +299,15 @@
       showTooltip(copyButton, 'Copy failed, please manually select and copy text', 'error');
     }
 
-    function mirrorTranslation() {
+    function submitTranslation() {
       const inputTextarea = document.querySelector('textarea[name="key"]');
       const resultTextarea = document.getElementById('resultTextarea');
       const translateButton = document.getElementById('translateButton');
+      const inputLangSelect = document.getElementById('inputLangSelect');
+      const outputFormatSelect = document.getElementById('outputFormatSelect');
 
-      if (!inputTextarea || !resultTextarea) {
-        showTooltip(translateButton, 'Translation areas not found', 'error');
+      if (!inputTextarea || !resultTextarea || !inputLangSelect || !outputFormatSelect) {
+        showTooltip(translateButton, 'Translation form elements not found', 'error');
         return;
       }
 
@@ -342,29 +318,77 @@
         return;
       }
 
+      const inputLang = inputLangSelect.value;
+      const outputFormat = outputFormatSelect.value;
+
       // Temporarily disable the button and show loading state
       const originalHTML = translateButton.innerHTML;
       translateButton.disabled = true;
       translateButton.innerHTML = '<i class="spinner-border spinner-border-sm"></i>';
 
-      // Simulate API delay
-      setTimeout(function () {
-        // Mirror (reverse) the input text to the result
-        const reversedText = inputText.split('').reverse().join('');
-        resultTextarea.value = reversedText;
+      resultTextarea.value = '';
 
-        // Re-enable the button
-        translateButton.disabled = false;
-        translateButton.innerHTML = originalHTML;
+      const formData = new URLSearchParams();
+      formData.append('key', inputText);
+      formData.append('input_lang', inputLang);
+      formData.append('output_format', outputFormat);
 
-        // Show success tooltip
-        showTooltip(translateButton, 'Translation completed', 'success');
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-        // Update floating label state for result textarea
-        if (resultTextarea.value.trim().length > 0) {
-          resultTextarea.classList.add('has-content');
-        }
-      }, 1000); // 1 second delay to simulate API call
+      // Call our Django proxy endpoint
+      fetch('/api/translate/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'X-CSRFToken': csrfToken,
+        },
+        body: formData
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          // Restore button state
+          translateButton.disabled = false;
+          translateButton.innerHTML = originalHTML;
+
+          if (data.success && data.result) {
+            // Determine which field to display based on output format
+            let translationResult = '';
+
+            if (outputFormat.includes('lmj') || outputFormat.includes('白話字') || outputFormat.includes('台灣字')) {
+              translationResult = data.result.lmj || data.result.output || 'No result available';
+            } else {
+              translationResult = data.result.output || data.result.lmj || 'No result available';
+            }
+
+            resultTextarea.value = translationResult;
+            resultTextarea.classList.add('has-content');
+
+            // Show success tooltip
+            showTooltip(translateButton, 'Translation completed!', 'success');
+          } else {
+            // Show error tooltip
+            showTooltip(translateButton, data.error || 'Translation failed', 'error');
+            resultTextarea.value = data.error || 'Translation failed. Please try again.';
+          }
+        })
+        .catch(error => {
+          // Restore button state
+          translateButton.disabled = false;
+          translateButton.innerHTML = originalHTML;
+
+          console.error('Translation error:', error);
+
+          // Show error tooltip
+          showTooltip(translateButton, 'Translation failed. Please try again.', 'error');
+
+          // Optional: Show fallback result for debugging
+          resultTextarea.value = `Error: ${error.message}`;
+        });
     }
   </script>
 </body>
