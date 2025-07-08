@@ -104,12 +104,12 @@
         <form class="mezzanine-form" method='POST'>
           {% csrf_token %}
           <div class="row">
-            <div class="form-floating col-md-6 mb-3 pe-0">
+            <div class="form-floating col-md-6 mb-3">
               {{ input_lang_form.input_lang }}
               <label class="ps-4" for="{{ input_lang_form.input_lang.id_for_label }}">
                 {{ input_lang_form.input_lang.label }}</label>
             </div>
-            <div class="form-floating col-md-6 mb-3 pe-0">
+            <div class="form-floating col-md-6 mb-3">
               {{ output_format_form.output_format }}
               <label class="ps-4" for="{{ output_format_form.output_format.id_for_label }}">
                 {{ output_format_form.output_format.label }}</label>
@@ -117,13 +117,13 @@
           </div>
 
           <div class="row">
-            <div class="form-floating col-md-6 mb-3 pe-0 position-relative">
+            <div class="form-floating col-md-6 mb-3 position-relative">
               {{ form.key }}
               <label for="floatingTextarea" class="ms-2">{{ form.key.label }}</label>
               <div class="char-count position-absolute text-muted small">0 / 500</div>
             </div>
 
-            <div class="form-floating col-md-6 mb-3 pe-0">
+            <div class="form-floating col-md-6 mb-3">
               <textarea disabled name="result" cols="40" rows="5" class="form-control" id="resultTextarea"
                 style="height: 150px;" placeholder=" ">{% for line in trans.lines %}{{ line }}{% if not forloop.last %}
 {% endif %}{% endfor %}</textarea>
@@ -133,12 +133,13 @@
           <div class="row g-2">
             <div class="col-6 col-md-1">
               <button type="button" class="btn btn-outline-secondary w-100" id="translateButton"
-                onclick="submitTranslation()">
+                      onclick="submitTranslation()">
                 <i class="bi bi-translate"></i>
               </button>
             </div>
             <div class="col-6 col-md-1 ms-auto">
-              <button type="button" class="btn btn-outline-secondary w-100" id="copyButton" onclick="copyResult()">
+              <button type="button" class="btn btn-outline-secondary w-100" id="copyButton"
+                      onclick="copyResult()">
                 <i class="bi bi-copy"></i>
               </button>
             </div>
@@ -207,7 +208,8 @@
 
     function showTooltip(element, message, type = 'success') {
       element.setAttribute('data-bs-toggle', 'tooltip');
-      element.setAttribute('data-bs-placement', 'top');
+      element.setAttribute('data-bs-placement', 'auto');
+      element.setAttribute('data-bs-html', true);
       element.setAttribute('data-bs-original-title', message);
 
       if (type === 'success') {
@@ -229,6 +231,7 @@
         element.removeAttribute('title');
         element.removeAttribute('data-bs-toggle');
         element.removeAttribute('data-bs-placement');
+        element.removeAttribute('data-bs-html');
       }, 3000);
     }
 
@@ -384,7 +387,7 @@
           console.error('Translation error:', error);
 
           // Show error tooltip
-          showTooltip(translateButton, 'Translation failed. Please try again.', 'error');
+          showTooltip(translateButton, 'Translation failed.<br>Please try again.', 'error');
 
           // Optional: Show fallback result for debugging
           resultTextarea.value = `Error: ${error.message}`;
