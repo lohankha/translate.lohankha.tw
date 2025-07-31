@@ -1,4 +1,6 @@
 from django import forms
+from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 
 from .models import WikiData
 
@@ -7,80 +9,75 @@ class TranslationAPIHelper:
     
     OUTPUT_OPTIONS = {
         'en': [
-            ('tai-han-tc-0', '台文(全漢)'),
-            ('tai-han-tc-1', '台文(漢羅)'),
-            ('tai-lmj-tc-tailo', '台文(台羅)'),
-            ('tai-lmj-tc-poj', '台文(白話字)'),
-            ('tai-lmj-tc-tw', '台文(台灣字)'),
+            ('tai-han', '漢羅'),
+            ('tai-lmj', '全羅'),
+            ('ja', '日文'), 
+            ('ko', '韓文'), 
+            ('tai', '台文'), 
+            ('zh-tw', '中文(正體)'), 
+            ('zh-cn', '中文(簡體)'), 
         ],
         'ja': [
-            ('tai-han-tc-0', '台文(全漢)'),
-            ('tai-han-tc-1', '台文(漢羅)'),
-            ('tai-lmj-tc-tailo', '台文(台羅)'),
-            ('tai-lmj-tc-poj', '台文(白話字)'),
-            ('tai-lmj-tc-tw', '台文(台灣字)'),
+            ('tai-han', '漢羅'),
+            ('tai-lmj', '全羅'),
         ],
         'ko': [
-            ('tai-han-tc-0', '台文(全漢)'),
-            ('tai-han-tc-1', '台文(漢羅)'),
-            ('tai-lmj-tc-tailo', '台文(台羅)'),
-            ('tai-lmj-tc-poj', '台文(白話字)'),
-            ('tai-lmj-tc-tw', '台文(台灣字)'),
+            ('tai-han', '漢羅'),
+            ('tai-lmj', '全羅'),
         ],
         'zh-tw': [
-            ('tai-han-tc-0', '台文(全漢)'),
-            ('tai-han-tc-1', '台文(漢羅)'),
-            ('tai-lmj-tc-tailo', '台文(台羅)'),
-            ('tai-lmj-tc-poj', '台文(白話字)'),
-            ('tai-lmj-tc-tw', '台文(台灣字)'),
+            ('tai-han', '漢羅'),
+            ('tai-lmj', '全羅'),
         ],
         'zh-cn': [
-            ('tai-han-tc-0', '台文(全漢)'),
-            ('tai-han-tc-1', '台文(漢羅)'),
-            ('tai-lmj-tc-tailo', '台文(台羅)'),
-            ('tai-lmj-tc-poj', '台文(白話字)'),
-            ('tai-lmj-tc-tw', '台文(台灣字)'),
+            ('tai-han', '漢羅'),
+            ('tai-lmj', '全羅'),
         ],
-        'tai-han-tc-0': [('en', '英文'), ('ja', '日文'), ('ko', '韓文'), ('zh-tw', '中文(正體)'), ('zh-cn', '中文(簡體)'), ('tai-han-tc-1', '台文(正體漢羅)'), ('tai-lmj-tc-tailo', '台文(正體台羅)'), ('tai-lmj-tc-poj', '台文(正體白話字)'), ('tai-lmj-tc-tw', '台文(正體台灣字)')],
-        'tai-han-tc-1': [('en', '英文'), ('ja', '日文'), ('ko', '韓文'), ('zh-tw', '中文(正體)'), ('zh-cn', '中文(簡體)'), ('tai-han-tc-0', '台文(正體全漢)'), ('tai-lmj-tc-tailo', '台文(正體台羅)'), ('tai-lmj-tc-poj', '台文(正體白話字)'), ('tai-lmj-tc-tw', '台文(正體台灣字)')],
-        'tai-lmj-tc-tailo': [('en', '英文'), ('ja', '日文'), ('ko', '韓文'), ('zh-tw', '中文(正體)'), ('zh-cn', '中文(簡體)'), ('tai-han-tc-0', '台文(正體全漢)'), ('tai-han-tc-1', '台文(正體漢羅)'), ('tai-lmj-tc-poj', '台文(正體白話字)'), ('tai-lmj-tc-tw', '台文(正體台灣字)')],
-        'tai-lmj-tc-poj': [('en', '英文'), ('ja', '日文'), ('ko', '韓文'), ('zh-tw', '中文(正體)'), ('zh-cn', '中文(簡體)'), ('tai-han-tc-0', '台文(正體全漢)'), ('tai-han-tc-1', '台文(正體漢羅)'), ('tai-lmj-tc-tailo', '台文(正體台羅)'), ('tai-lmj-tc-tw', '台文(正體台灣字)')],
-        'tai-lmj-tc-tw': [('en', '英文'), ('ja', '日文'), ('ko', '韓文'), ('zh-tw', '中文(正體)'), ('zh-cn', '中文(簡體)'), ('tai-han-tc-0', '台文(正體全漢)'), ('tai-han-tc-1', '台文(正體漢羅)'), ('tai-lmj-tc-tailo', '台文(正體台羅)'), ('tai-lmj-tc-poj', '台文(正體白話字)')],
+        'tai': [
+            ('en', '英文'), 
+            ('ja', '日文'), 
+            ('ko', '韓文'), 
+            ('tai-han', '漢羅'),
+            ('tai-lmj', '全羅'),
+            ('zh-tw', '中文(正體)'), 
+            ('zh-cn', '中文(簡體)'), 
+        ],
         'classical': [('tai-lmj-tailo', '台語漢字音(台羅)')],
     }
     
     @staticmethod
-    def get_api_params(input_lang, output_format, input_text):
+    def get_api_params(input_lang, output_format, input_text, lmj='tailo'):
         params = {
             'mode': 'text',
             'inp': input_text,
         }
         
-        def parse_tai_format(format_str):
+        def parse_tai_format(format_str, rom_type='tailo'):
+            lmjmod = {'tailo': 0, 'poj': 1, 'toj': 2}.get(rom_type, 0)
             if format_str.startswith('tai-han-tc-'):
                 outmod = format_str.split('-')[-1]
-                return 1, 0, int(outmod)  # hanjimod=1(正體), lmjmod=0(台羅), outmod=0/1
+                return 1, lmjmod, int(outmod)  # hanjimod=1(正體), lmjmod=用戶選擇, outmod=0/1
             elif format_str.startswith('tai-lmj-tc-'):
-                lmj_type = format_str.split('-')[-1]
-                lmjmod = {'tailo': 0, 'poj': 1, 'tw': 2}.get(lmj_type, 0)
-                return 1, lmjmod, 2  # hanjimod=1(正體), lmjmod=0/1/2, outmod=2(全羅)
+                return 1, lmjmod, 2  # hanjimod=1(正體), lmjmod=用戶選擇, outmod=2(全羅)
             else:
-                return 1, 0, 0
+                return 1, lmjmod, 0
         
         if input_lang in ['en', 'ja', 'ko']:
             params['cmd'] = 'G2T'
             params['lang'] = input_lang
-            hanjimod, lmjmod, outmod = parse_tai_format(output_format)
+            hanjimod, lmjmod, outmod = parse_tai_format(output_format, lmj)
             params['hanjimod'] = hanjimod
+            params['lmjmod'] = lmjmod
             params['outmod'] = outmod
                 
         elif input_lang in ['zh-tw', 'zh-cn']:
             params['cmd'] = 'H2T'
-            hanjimod, lmjmod, outmod = parse_tai_format(output_format)
+            hanjimod, lmjmod, outmod = parse_tai_format(output_format, lmj)
             params['hanjimod'] = hanjimod
+            params['lmjmod'] = lmjmod
             params['outmod'] = outmod
                 
-        elif input_lang.startswith('tai-'):
+        elif input_lang == 'tai':
             if output_format in ['en', 'ja', 'ko']:
                 params['cmd'] = 'T2G'
                 params['lang'] = output_format
@@ -89,8 +86,9 @@ class TranslationAPIHelper:
                 params['hanjimod'] = 1 if output_format == 'zh-tw' else 2
             elif output_format.startswith('tai-'):
                 params['cmd'] = 'T2T'
-                hanjimod, lmjmod, outmod = parse_tai_format(output_format)
+                hanjimod, lmjmod, outmod = parse_tai_format(output_format, lmj)
                 params['hanjimod'] = hanjimod
+                params['lmjmod'] = lmjmod
                 params['outmod'] = outmod
                 
         elif input_lang == 'classical':
@@ -109,14 +107,14 @@ class WikiDataForm(forms.ModelForm):
 
 class SearchForm(forms.Form):
     key = forms.CharField(
-        label="請佇遮輸入華語！",
+        label="請佇遮輸入文字！",
         widget=forms.Textarea(attrs={
             "class": "form-control",
-            "placeholder": "請佇遮輸入華語！",
+            "placeholder": "請佇遮輸入文字！",
             "id": "floatingTextarea",
             "rows": "5",
             "maxlength": "500",
-            "style": "height: 150px;",
+            "style": "height: 150px; resize: none;",
         })
     )
 
@@ -135,11 +133,7 @@ class InputModForm(forms.Form):
             ('ko', '韓文'),
             ('zh-tw', '中文(正體)'),
             ('zh-cn', '中文(簡體)'),
-            ('tai-han-tc-0', '台文(全漢)'),
-            ('tai-han-tc-1', '台文(漢羅)'),
-            ('tai-lmj-tc-tailo', '台文(台羅)'),
-            ('tai-lmj-tc-poj', '台文(白話字)'),
-            ('tai-lmj-tc-tw', '台文(台灣字)'),
+            ('tai', '台文'),
             ('classical', '文言文'),
         ], 
     )
@@ -167,13 +161,33 @@ class OutputModForm(forms.Form):
     
     def update_choices(self, input_lang):
         self.fields['output_format'].choices = TranslationAPIHelper.get_output_options(input_lang)
+
+class LmjModForm(forms.Form):
+    lmj = forms.ChoiceField(
+        label="羅馬字",
+        widget=forms.Select(attrs={
+            'class': 'form-select',
+            'id': 'lmjSelect',
+            'aria-label': '羅馬字',
+            }),
+        choices=[
+            ('tailo', '台羅'),
+            ('poj', '白話字'),
+            ('toj', '台灣字'),
+        ], 
+    )
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['lmj'].initial = 'tailo'
+
 class SearchTermForm(forms.Form):
     key = forms.CharField()
 
 class UploadFileForm(forms.Form):
     file = forms.FileField(
-                label='揀一个檔案'
-            )
+        label='揀一个檔案',
+    )
 
 class SearchImikForm(forms.Form):
     key = forms.CharField()
