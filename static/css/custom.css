@@ -1,0 +1,107 @@
+/* Unified colors */
+:root {
+  --border-color: #DEE2E6; /* Unified color for borders and hr */
+}
+
+/* Character count display */
+.char-count {
+  bottom: 8px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(4px);
+  z-index: 10;
+  pointer-events: none;
+  user-select: none;
+  transition: all 0.2s ease-in-out;
+}
+
+.char-count.text-warning {
+  color: #f57c00 !important;
+  background: rgba(255, 248, 225, 0.95);
+  border-color: rgba(245, 124, 0, 0.2);
+}
+
+.char-count.text-danger {
+  color: #d32f2f !important;
+  background: rgba(255, 242, 242, 0.95);
+  border-color: rgba(211, 47, 47, 0.2);
+}
+
+.position-relative textarea {
+  padding-bottom: 35px !important;
+}
+
+/* Fix floating label issue */
+#resultTextarea:empty+label {
+  transform: scale(1) translateY(0) translateX(0);
+  color: #6c757d;
+}
+
+#resultTextarea:not(:empty)+label {
+  transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+  color: #6c757d;
+}
+
+#resultTextarea.has-content+label {
+  transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+  color: #6c757d;
+}
+
+/* Translate button loading spinner */
+.spinner-border-sm {
+  width: 0.875rem;
+  height: 0.875rem;
+  animation: spinner-border 0.75s linear infinite;
+}
+
+@keyframes spinner-border {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Two-line output styling */
+#resultTextarea {
+  white-space: pre-wrap;
+  line-height: 1.5;
+}
+
+/* Textarea styles */
+.form-control {
+  border-color: var(--border-color) !important;
+}
+
+/* Button unified border */
+.btn {
+  border-color: var(--border-color) !important;
+}
+
+.btn-outline-secondary {
+  border-color: var(--border-color) !important;
+}
+.btn-outline-secondary:hover,
+.btn-outline-secondary:focus {
+  border-color: var(--border-color) !important;
+}
+.btn-primary {
+  border-color: var(--border-color) !important;
+}
+.btn-success {
+  border-color: var(--border-color) !important;
+}
+.btn-danger {
+  border-color: var(--border-color) !important;
+}
+
+/* HR divider unified styles */
+hr {
+  border: none !important;
+  height: 1px !important;
+  background-color: var(--border-color) !important;
+  opacity: 1 !important;
+}
