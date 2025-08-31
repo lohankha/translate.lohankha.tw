@@ -9,40 +9,41 @@ class TranslationAPIHelper:
     
     OUTPUT_OPTIONS = {
         'en': [
-            ('tai-han', '漢羅'),
-            ('tai-lmj', '全羅'),
-            ('ja', '日文'), 
-            ('ko', '韓文'), 
-            ('tai', '台文'), 
-            ('zh-tw', '中文(正體)'), 
-            ('zh-cn', '中文(簡體)'), 
+            ('tai-han', '台文(全漢)'),
+            ('tai-hanlo', '台文(漢羅)'),
+            ('tai-lmj', '台文(全羅)'),
         ],
         'ja': [
-            ('tai-han', '漢羅'),
-            ('tai-lmj', '全羅'),
+            ('tai-han', '台文(全漢)'),
+            ('tai-hanlo', '台文(漢羅)'),
+            ('tai-lmj', '台文(全羅)'),
         ],
         'ko': [
-            ('tai-han', '漢羅'),
-            ('tai-lmj', '全羅'),
+            ('tai-han', '台文(全漢)'),
+            ('tai-hanlo', '台文(漢羅)'),
+            ('tai-lmj', '台文(全羅)'),
         ],
         'zh-tw': [
-            ('tai-han', '漢羅'),
-            ('tai-lmj', '全羅'),
+            ('tai-han', '台文(全漢)'),
+            ('tai-hanlo', '台文(漢羅)'),
+            ('tai-lmj', '台文(全羅)'),
         ],
         'zh-cn': [
-            ('tai-han', '漢羅'),
-            ('tai-lmj', '全羅'),
+            ('tai-han', '台文(全漢)'),
+            ('tai-hanlo', '台文(漢羅)'),
+            ('tai-lmj', '台文(全羅)'),
         ],
         'tai': [
             ('en', '英文'), 
             ('ja', '日文'), 
             ('ko', '韓文'), 
-            ('tai-han', '漢羅'),
-            ('tai-lmj', '全羅'),
             ('zh-tw', '中文(正體)'), 
             ('zh-cn', '中文(簡體)'), 
+            ('tai-han', '台文(全漢)'),
+            ('tai-hanlo', '台文(漢羅)'),
+            ('tai-lmj', '台文(全羅)'),
         ],
-        'classical': [('tai-lmj-tailo', '台語漢字音(台羅)')],
+        'classical': [('tai-lmj', '台語漢字音')],
     }
     
     @staticmethod
@@ -54,12 +55,11 @@ class TranslationAPIHelper:
         
         def parse_tai_format(format_str, rom_type='tailo'):
             lmjmod = {'tailo': 0, 'poj': 1, 'toj': 2}.get(rom_type, 0)
-            if format_str.startswith('tai-han-tc-'):
-                outmod = format_str.split('-')[-1]
-                return 1, lmjmod, int(outmod)  # hanjimod=1(正體), lmjmod=用戶選擇, outmod=0/1
-            elif format_str.startswith('tai-lmj-tc-'):
+            if format_str.startswith('tai-hanlo'):
+                return 1, lmjmod, 1  # hanjimod=1(正體), lmjmod=用戶選擇, outmod=0/1
+            elif format_str.startswith('tai-lmj'):
                 return 1, lmjmod, 2  # hanjimod=1(正體), lmjmod=用戶選擇, outmod=2(全羅)
-            else:
+            else: # tai-han
                 return 1, lmjmod, 0
         
         if input_lang in ['en', 'ja', 'ko']:
@@ -93,6 +93,8 @@ class TranslationAPIHelper:
                 
         elif input_lang == 'classical':
             params['cmd'] = 'B2L'
+            hanjimod, lmjmod, outmod = parse_tai_format(output_format, lmj)
+            params['lmjmod'] = lmjmod
             
         return params
     
@@ -164,11 +166,11 @@ class OutputModForm(forms.Form):
 
 class LmjModForm(forms.Form):
     lmj = forms.ChoiceField(
-        label="羅馬字",
+        label="羅馬字類型(用佇台文輸出)",
         widget=forms.Select(attrs={
             'class': 'form-select',
             'id': 'lmjSelect',
-            'aria-label': '羅馬字',
+            'aria-label': '羅馬字類型(用佇台文輸出)',
             }),
         choices=[
             ('tailo', '台羅'),

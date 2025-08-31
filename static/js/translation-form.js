@@ -1,51 +1,57 @@
 function setCookie(name, value, days = 30) {
-    const expires = new Date();
-    expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
-    document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
+//    const expires = new Date();
+//    expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+//    document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
 }
 
 function getCookie(name) {
-    const nameEQ = name + "=";
-    const ca = document.cookie.split(';');
-    for (let i = 0; i < ca.length; i++) {
-        let c = ca[i];
-        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
-    }
+//    const nameEQ = name + "=";
+//    const ca = document.cookie.split(';');
+//    for (let i = 0; i < ca.length; i++) {
+//        let c = ca[i];
+//        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+//        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+//    }
     return null;
 }
 
 const OUTPUT_OPTIONS = {
     'en': [
-        ['tai-han', '漢羅'],
-        ['tai-lmj', '全羅'],
+        ['tai-han', '台文(全漢)'],
+        ['tai-hanlo', '台文(漢羅)'],
+        ['tai-lmj', '台文(全羅)'],
     ],
     'ja': [
-        ['tai-han', '漢羅'],
-        ['tai-lmj', '全羅'],
+        ['tai-han', '台文(全漢)'],
+        ['tai-hanlo', '台文(漢羅)'],
+        ['tai-lmj', '台文(全羅)'],
     ],
     'ko': [
-        ['tai-han', '漢羅'],
-        ['tai-lmj', '全羅'],
+        ['tai-han', '台文(全漢)'],
+        ['tai-hanlo', '台文(漢羅)'],
+        ['tai-lmj', '台文(全羅)'],
     ],
     'zh-tw': [
-        ['tai-han', '漢羅'],
-        ['tai-lmj', '全羅'],
+        ['tai-han', '台文(全漢)'],
+        ['tai-hanlo', '台文(漢羅)'],
+        ['tai-lmj', '台文(全羅)'],
     ],
     'zh-cn': [
-        ['tai-han', '漢羅'],
-        ['tai-lmj', '全羅'],
+        ['tai-han', '台文(全漢)'],
+        ['tai-hanlo', '台文(漢羅)'],
+        ['tai-lmj', '台文(全羅)'],
     ],
     'tai': [
         ['en', '英文'],
         ['ja', '日文'],
         ['ko', '韓文'],
-        ['tai-han', '漢羅'],
-        ['tai-lmj', '全羅'],
         ['zh-tw', '中文(正體)'],
-        ['zh-cn', '中文(簡體)']
+        ['zh-cn', '中文(簡體)'],
+        ['tai-han', '台文(全漢)'],
+        ['tai-hanlo', '台文(漢羅)'],
+        ['tai-lmj', '台文(全羅)'],
     ],
-    'classical': [['tai-lmj-tailo', '台語漢字音(台羅)']]
+    'classical': [['tai-lmj', '台語漢字音']]
 };
 
 function updateSelectOptions(selectElement, options, cookieName = null, defaultValue = null) {
@@ -86,9 +92,9 @@ function updateOutputOptions() {
     
     updateSelectOptions(outputFormatSelect, options, 'outputFormat', 'tai-han');
     setCookie('inputLang', selectedLang);
-    if (options.length > 0) {
-        setCookie('outputFormat', options[0][0]);
-    }
+   if (options.length > 0) {
+       setCookie('outputFormat', options[0][0]);
+   }
 }
 
 // Function to get user's real IP address
@@ -164,12 +170,11 @@ async function getAPIParams(inputLang, outputFormat, inputText, lmj = 'tailo') {
     function parseTaiFormat(formatStr, romType = 'tailo') {
         const lmjmod = {'tailo': 0, 'poj': 1, 'toj': 2}[romType] || 0;
         
-        if (formatStr.startsWith('tai-han-tc-')) {
-            const outmod = formatStr.split('-').pop();
-            return [1, lmjmod, parseInt(outmod)]; // hanjimod=1(正體), lmjmod=用戶選擇, outmod=0/1
-        } else if (formatStr.startsWith('tai-lmj-tc-')) {
+        if (formatStr.startsWith('tai-hanlo')) {
+            return [1, lmjmod, 1]; // hanjimod=1(正體), lmjmod=用戶選擇, outmod=0/1
+        } else if (formatStr.startsWith('tai-lmj')) {
             return [1, lmjmod, 2]; // hanjimod=1(正體), lmjmod=0/1/2, outmod=2(全羅)
-        } else {
+        } else { // tai-han
             return [1, lmjmod, 0];
         }
     }
@@ -203,6 +208,8 @@ async function getAPIParams(inputLang, outputFormat, inputText, lmj = 'tailo') {
         }
     } else if (inputLang === 'classical') {
         params.cmd = 'B2L';
+        const [hanjimod, lmjmod, outmod] = parseTaiFormat(outputFormat, lmj);
+        params.lmjmod = lmjmod;
     }
     
     return params;

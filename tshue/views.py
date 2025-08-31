@@ -11,6 +11,7 @@ from django.template import RequestContext
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
+from django_ratelimit.decorators import ratelimit
 
 from .forms import (InputModForm, LmjModForm, OutputModForm, SearchForm,
                     SearchImikForm, SearchTermForm, TranslationAPIHelper,
@@ -20,6 +21,7 @@ from .models import WikiData
 
 @csrf_exempt
 @require_http_methods(["POST"])
+@ratelimit(key='user_or_ip', rate='100/h')
 def translation_proxy(request):
     """
     Proxy endpoint for translation API to handle CORS issues
@@ -119,6 +121,7 @@ def getClientIP(request):
        ip = request.META.get('REMOTE_ADDR')
     return ip
 
+@ratelimit(key='user_or_ip', rate='100/h')
 def index(request):
     form = SearchForm(request.POST or None)
     if form.is_valid():
@@ -154,96 +157,6 @@ def index(request):
         # generate API parameters based on input language and output format
         api_params = TranslationAPIHelper.get_api_params(input_lang, output_format, key, lmj)
         
-        try:
-            # TODO: use new API parameters format
-            import socket
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sock.connect(("localhost", 9999))
-            # SETIP
-            isStart = False
-            isSent = False
-            output = b""
-            buf = ''
-            while True:
-                if not isStart:
-                    response = sock.recv(1024).decode()
-                    if response == "$ ":
-                        isStart = True
-                    continue
-                else:
-                    if not isSent:
-                        string = "SETIP %s" % client_ip
-                        sock.sendall(string.encode())
-                        isSent = True
-                    else:
-                        response = sock.recv(1024)
-                        output += response
-                        try:
-                            if "DONE" in response.decode():
-                                break
-                        except:
-                            pass
-            for line in output.decode().split('\n'):
-                if line.startswith('DONE'):
-                    buf = line[4:]
-                    break
-
-            # TRANSLATE
-            isStart = False
-            isSent = False
-            output = b""
-            while True:
-                if not isStart:
-                    if buf == '$ ':
-                        buf = ''
-                        isStart = True
-                    else:
-                        response = sock.recv(1024).decode()
-                        if response == "$ ":
-                            isStart = True
-                    continue
-                else:
-                    if not isSent:
-                        # TODO: use new API parameters format
-                        cmd = api_params.get('cmd', 'H2T')
-                        lang = api_params.get('lang', '')
-                        hanjimod = api_params.get('hanjimod', 1)
-                        lmjmod_param = api_params.get('lmjmod', 0)
-                        outmod = api_params.get('outmod', 1)
-                        
-                        # old format handling
-                        if cmd == 'H2T':
-                            hanmod = '1' if input_lang == 'zh-tw' else '0'
-                        elif cmd == 'G2T':
-                            hanmod = lang
-                        else:
-                            hanmod = '0'
-                        
-                        lmjmod = str(lmjmod_param)
-                        
-                        string = "TRANSLATE%s%s0 %s" % (hanmod, lmjmod, key.replace('\r\n', '\n'))
-                        sock.sendall(string.encode())
-                        isSent = True
-                    else:
-                        response = sock.recv(1024)
-                        output += response
-                        try:
-                            if "DONE" in response.decode():
-                                break
-                        except:
-                            pass
-            for line in output.decode().split('\n'):
-                if line.startswith('DONE'):
-                    break
-                lines.append(line)
-            sock.close()
-            
-            output_text = '\n'.join(lines)
-            
-        except Exception as e:
-            error_msg = f"Translation error: {str(e)}"
-            print(f"Translation error: {e}")
-
     context = {
         'trans': {'lines': lines},
         'form': form,
