@@ -1,0 +1,215 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-09-11 03:13+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: zh_TW\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: templates/footer.html:4
+msgid "Lohankha 提供"
+msgstr "Lohankha 提供"
+
+#: templates/footer.html:5
+msgid "台英、台日、台韓、台華雙向機器翻譯"
+msgstr "台英、台日、台韓、台華雙向機器翻譯"
+
+#: templates/footer.html:6
+msgid "台語漢字羅馬字轉換"
+msgstr "台語漢字羅馬字轉換"
+
+#: templates/footer.html:7
+msgid "文言文標台語漢字音"
+msgstr "文言文標台語漢字音"
+
+#: templates/footer.html:8
+msgid "機器翻譯袂當保證結果"
+msgstr "機器翻譯袂當保證結果 100% 正確，請配合人工校對。"
+
+#: templates/footer.html:9
+msgid "任何問題請到"
+msgstr "任何問題請到"
+
+#: templates/footer.html:9
+msgid "Facebook 迷眾頁留話"
+msgstr "Facebook 迷眾頁留話"
+
+#: templates/footer.html:10
+msgid "協力"
+msgstr "協力"
+
+#: templates/footer.html:10
+msgid "財團法人信望愛資訊文化藝術基金會"
+msgstr "財團法人信望愛資訊文化藝術基金會"
+
+#: templates/index.html:8 templates/subtitle.html:8
+msgid "華語, 台語, 翻譯"
+msgstr "華語, 台語, 翻譯"
+
+#: templates/index.html:9 templates/subtitle.html:9
+msgid "提供台英、台日、台韓、台華雙向機器翻譯的服務"
+msgstr "提供台英、台日、台韓、台華雙向機器翻譯的服務"
+
+#: templates/index.html:11 templates/index.html:13 templates/nav_tabs.html:3
+#: templates/subtitle.html:11 templates/subtitle.html:13
+msgid "Lohankha Translate - 台語翻譯"
+msgstr "Lohankha Translate - 台語翻譯"
+
+#: templates/index.html:66
+msgid "翻譯結果"
+msgstr "翻譯結果"
+
+#: templates/nav_tabs.html:28
+msgid "翻譯字幕"
+msgstr "翻譯字幕"
+
+#: templates/nav_tabs.html:31
+msgid "翻譯文字"
+msgstr "翻譯文字"
+
+#: templates/subtitle.html:59 templates/subtitle.html:81
+msgid "Choose File"
+msgstr "揀一个檔案"
+
+#: templates/subtitle.html:61 templates/subtitle.html:82
+msgid "No file chosen"
+msgstr "無揀著檔案"
+
+#: templates/subtitle.html:63
+msgid "Upload"
+msgstr "上傳"
+
+#: templates/subtitle.html:75
+msgid "Error: File is empty! Please select a valid SRT file."
+msgstr "錯誤：檔案是空个！請選擇有效个 SRT 檔案。"
+
+#: templates/subtitle.html:76
+msgid "File size cannot exceed 1MB!"
+msgstr "檔案大小袂當超過1MB！"
+
+#: templates/subtitle.html:77
+msgid "Selected file:"
+msgstr "揀著檔案："
+
+#: templates/subtitle.html:78
+msgid "Processing..."
+msgstr "當在處理中..."
+
+#: templates/subtitle.html:79
+msgid "Translation completed! File should be downloading..."
+msgstr "翻譯完成！檔案當在下載..."
+
+#: templates/subtitle.html:80
+msgid "Translation failed. Please try again."
+msgstr "翻譯失敗。請閣試。"
+
+#: tshue/forms.py:13 tshue/forms.py:18 tshue/forms.py:23 tshue/forms.py:28
+#: tshue/forms.py:33 tshue/forms.py:43
+msgid "台文(全漢)"
+msgstr "台文(全漢)"
+
+#: tshue/forms.py:14 tshue/forms.py:19 tshue/forms.py:24 tshue/forms.py:29
+#: tshue/forms.py:34 tshue/forms.py:44
+msgid "台文(漢羅)"
+msgstr "台文(漢羅)"
+
+#: tshue/forms.py:15 tshue/forms.py:20 tshue/forms.py:25 tshue/forms.py:30
+#: tshue/forms.py:35 tshue/forms.py:45
+msgid "台文(全羅)"
+msgstr "台文(全羅)"
+
+#: tshue/forms.py:38 tshue/forms.py:134
+msgid "英文"
+msgstr "英文"
+
+#: tshue/forms.py:39 tshue/forms.py:135
+msgid "日文"
+msgstr "日文"
+
+#: tshue/forms.py:40 tshue/forms.py:136
+msgid "韓文"
+msgstr "韓文"
+
+#: tshue/forms.py:41 tshue/forms.py:137
+msgid "中文(正體)"
+msgstr "中文(正體)"
+
+#: tshue/forms.py:42 tshue/forms.py:138
+msgid "中文(簡體)"
+msgstr "中文(簡體)"
+
+#: tshue/forms.py:47
+msgid "台語漢字音"
+msgstr "台語漢字音"
+
+#: tshue/forms.py:113 tshue/forms.py:116
+msgid "請佇遮輸入文字！"
+msgstr "請佇遮輸入文字！"
+
+#: tshue/forms.py:126 tshue/forms.py:130
+msgid "輸入"
+msgstr "輸入"
+
+#: tshue/forms.py:139
+msgid "台文"
+msgstr "台文"
+
+#: tshue/forms.py:140
+msgid "文言文"
+msgstr "文言文"
+
+#: tshue/forms.py:150 tshue/forms.py:154
+msgid "輸出"
+msgstr "輸出"
+
+#: tshue/forms.py:170 tshue/forms.py:174
+msgid "羅馬字類型(用佇台文輸出)"
+msgstr "羅馬字類型(用佇台文輸出)"
+
+#: tshue/forms.py:177
+msgid "台羅"
+msgstr "台羅"
+
+#: tshue/forms.py:178
+msgid "白話字"
+msgstr "白話字"
+
+#: tshue/forms.py:179
+msgid "台灣字"
+msgstr "台灣字"
+
+#: tshue/forms.py:192
+msgid "揀一个檔案"
+msgstr "揀一个檔案"
+
+#: templates/index.html:272
+msgid "Translation result copied to clipboard"
+msgstr "翻譯結果拷比到剪貼簿"
+
+#: templates/index.html:281
+msgid "Copy failed, please manually select and copy text"
+msgstr "拷比失敗，請自己選擇閣拷比文字"
+
+#: templates/index.html:221
+msgid "Translation result not found"
+msgstr "尋無翻譯結果"
+
+#: templates/index.html:228
+msgid "No translation result to copy"
+msgstr "無翻譯結果通拷比"
+
+#: templates/index.html:377
+msgid "Translation completed!"
+msgstr "翻譯完成！"
+

@@ -1,15 +1,16 @@
+{% load i18n %}
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="{{ LANGUAGE_CODE }}" dir="ltr">
 
 <head>
   <meta http-equiv="Content-type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="keywords" content="華語, 台語, 翻譯">
-  <meta name="description" content="提供台英、台日、台韓、台華雙向機器翻譯的服務">
+  <meta name="keywords" content="{% trans '華語, 台語, 翻譯' %}">
+  <meta name="description" content="{% trans '提供台英、台日、台韓、台華雙向機器翻譯的服務' %}">
   <meta property="og:url" content="https://lohankha.tw/" />
-  <meta property="og:title" content="Lohankha Translate - 台語翻譯" />
+  <meta property="og:title" content="{% trans 'Lohankha Translate - 台語翻譯' %}" />
   <meta property="og:image" content="https://lohankha.tw/static/img/lohankha_wide.png" />
-  <title>Lohankha Translate - 台語翻譯</title>
+  <title>{% trans 'Lohankha Translate - 台語翻譯' %}</title>
   <link rel="shortcut icon" href="/static/img/favicon.ico">
 
   <link rel="alternate" type="application/rss+xml" title="RSS" href="/blog/feeds/rss/">
@@ -17,7 +18,7 @@
 
   <link rel="stylesheet" href="/static/css/font.css">
 
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
   <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
@@ -28,18 +29,7 @@
   <div class="container">
     <div class="row">
       <div class="my-3">
-        <ul class="nav nav-tabs mb-3">
-          <h4 class="col-md-6 mt-1">Lohankha Translate - 台語翻譯</h4>
-          <li class="col-md-2 ms-auto nav-item text-center">
-            <a class="nav-link" aria-current="page" href="..">翻譯文字</a>
-          </li>
-          <li class="col-md-2 nav-item text-center active">
-            <a class="nav-link active" href="#">翻譯字幕</a>
-          </li>
-        </ul>
-        
-
-
+        {% include 'nav_tabs.html' %}
         {% block content %}
         <form class="mezzanine-form" method='POST' enctype="multipart/form-data" id="uploadForm">
           {% csrf_token %}
@@ -63,33 +53,50 @@
           <div class="alert alert-danger" id="file-result" style="display: none;"></div>
           <div class="alert alert-info" id="upload-info" style="display: none;"></div>
           
-          <div class="input-group mb-3">
-            <input type="file" name="file" class="form-control" accept=".srt" id="id_file" required>
+          <div class="input-group">
+            <input type="file" name="file" class="form-control" accept=".srt" id="id_file" required style="display: none;">
+            <button type="button" class="btn btn-outline-secondary rounded-start" id="custom-file-button">
+              <i class="bi bi-file-earmark"></i> <span id="file-button-text">{% trans 'Choose File' %}</span>
+            </button>
+            <span class="form-control" id="file-name-display">{% trans 'No file chosen' %}</span>
             <button class="btn btn-primary" type="submit" id="file-submit" disabled>
-              <i class="bi bi-upload"></i> Upload
+              <i class="bi bi-upload"></i> {% trans 'Upload' %}
             </button>
           </div>
         </form>
         {% endblock %}
       </div>
     </div>
-    <hr>
-    <div class="translate-footer my-3 text-center text-body-secondary">
-      <p class="mb-1">Lohankha 提供</p>
-      <p class="mb-1">1. 台英、台日、台韓、台華雙向機器翻譯</p>
-      <p class="mb-1">2. 台語漢字羅馬字轉換</p>
-      <p class="mb-1">3. 文言文標台語漢字音</p>
-      <p class="mb-1">機器翻譯袂當保證結果 100% 正確，請配合人工校對。</p>
-      <p class="mb-1">任何問題請到 <a href="https://www.facebook.com/share/p/1WNZbVVcy7/" class="link-underline link-underline-opacity-0 link-underline-opacity-75-hover" target="_blank">Facebook 迷眾頁留話</a></p>
-      <p class="mb-1">協力 <a href="https://taigi.fhl.net" class="link-underline link-underline-opacity-0 link-underline-opacity-75-hover" target="_blank">財團法人信望愛資訊文化藝術基金會</a></p>
-    </div>
+    {% include 'footer.html' %}
   </div>
   <script>
+    // Translation strings for JavaScript
+    const translations = {
+      fileEmpty: "{% trans 'Error: File is empty! Please select a valid SRT file.' %}",
+      fileSizeExceeded: "{% trans 'File size cannot exceed 1MB!' %}",
+      selectedFile: "{% trans 'Selected file:' %}",
+      processing: "{% trans 'Processing...' %}",
+      translationCompleted: "{% trans 'Translation completed! File should be downloading...' %}",
+      translationFailed: "{% trans 'Translation failed. Please try again.' %}",
+      chooseFile: "{% trans 'Choose File' %}",
+      noFileChosen: "{% trans 'No file chosen' %}"
+    };
+    
     document.addEventListener('DOMContentLoaded', function() {
       let fileInput = document.getElementById("id_file");
+      let customFileButton = document.getElementById("custom-file-button");
+      let fileButtonText = document.getElementById("file-button-text");
+      let fileNameDisplay = document.getElementById("file-name-display");
       let fileResult = document.getElementById("file-result");
       let fileSubmit = document.getElementById("file-submit");
       let uploadInfo = document.getElementById("upload-info");
+      
+      // Handle custom file button click
+      if (customFileButton) {
+        customFileButton.addEventListener("click", function() {
+          fileInput.click();
+        });
+      }
       
       if (fileInput && fileResult && fileSubmit) {
         fileInput.addEventListener("change", function () {
@@ -98,9 +105,13 @@
             const fileSize = file.size;
             const fileMb = fileSize / 1024 ** 2;
             
+            // Update file display
+            fileNameDisplay.textContent = file.name;
+            fileButtonText.textContent = translations.chooseFile;
+            
             // Check if file is empty
             if (fileSize === 0) {
-              fileResult.innerHTML = "Error: File is empty! Please select a valid SRT file.";
+              fileResult.innerHTML = translations.fileEmpty;
               fileResult.style.display = "block";
               fileSubmit.disabled = true;
               return;
@@ -108,7 +119,7 @@
             
             // Check file size
             if (fileMb >= 1) {
-              fileResult.innerHTML = "檔案大小袂當超過1MB！";
+              fileResult.innerHTML = translations.fileSizeExceeded;
               fileResult.style.display = "block";
               fileSubmit.disabled = true;
             } else {
@@ -116,10 +127,13 @@
               fileSubmit.disabled = false;
               
               // Show file info
-              uploadInfo.innerHTML = `Selected file: ${file.name} (${(fileSize / 1024).toFixed(1)} KB)`;
+              uploadInfo.innerHTML = `${translations.selectedFile} ${file.name} (${(fileSize / 1024).toFixed(1)} KB)`;
               uploadInfo.style.display = "block";
             }
           } else {
+            // Reset to default state
+            fileNameDisplay.textContent = translations.noFileChosen;
+            fileButtonText.textContent = translations.chooseFile;
             fileResult.style.display = "none";
             uploadInfo.style.display = "none";
             fileSubmit.disabled = true;
@@ -135,19 +149,19 @@
             const file = fileInput.files.item(0);
             if (file.size === 0) {
               e.preventDefault();
-              fileResult.innerHTML = "Error: File is empty! Please select a valid SRT file.";
+              fileResult.innerHTML = translations.fileEmpty;
               fileResult.style.display = "block";
               return false;
             }
             
             // Show upload progress
-            uploadInfo.innerHTML = "Processing...";
+            uploadInfo.innerHTML = translations.processing;
             uploadInfo.style.display = "block";
             fileSubmit.disabled = true;
             
             // Reset state after a delay (for file download)
             setTimeout(function() {
-              uploadInfo.innerHTML = "Translation completed! File should be downloading...";
+              uploadInfo.innerHTML = translations.translationCompleted;
               uploadInfo.className = "alert alert-success";
               // Reset button and file input, but keep success alert visible
               fileSubmit.disabled = false;
@@ -156,7 +170,7 @@
             
             // Handle form submission errors
             uploadForm.addEventListener("error", function() {
-              uploadInfo.innerHTML = "Translation failed. Please try again.";
+              uploadInfo.innerHTML = translations.translationFailed;
               uploadInfo.className = "alert alert-danger";
               setTimeout(function() {
                 uploadInfo.style.display = "none";

@@ -17,9 +17,9 @@ function getCookie(name) {
 
 const OUTPUT_OPTIONS = {
     'en': [
-        ['tai-han', '台文(全漢)'],
-        ['tai-hanlo', '台文(漢羅)'],
-        ['tai-lmj', '台文(全羅)'],
+        ['tai-han', 'Taiwanese (Chinese characters only)'],
+        ['tai-hanlo', 'Taiwanese (Mixed Chinese and Romanization)'],
+        ['tai-lmj', 'Taiwanese (Romanization only)'],
     ],
     'ja': [
         ['tai-han', '台文(全漢)'],
@@ -32,6 +32,16 @@ const OUTPUT_OPTIONS = {
         ['tai-lmj', '台文(全羅)'],
     ],
     'zh-tw': [
+        ['tai-han', '台文(全漢)'],
+        ['tai-hanlo', '台文(漢羅)'],
+        ['tai-lmj', '台文(全羅)'],
+    ],
+    'tai': [
+        ['en', '英文'],
+        ['ja', '日文'],
+        ['ko', '韓文'],
+        ['zh-tw', '中文(正體)'],
+        ['zh-cn', '中文(簡體)'],
         ['tai-han', '台文(全漢)'],
         ['tai-hanlo', '台文(漢羅)'],
         ['tai-lmj', '台文(全羅)'],
@@ -88,7 +98,13 @@ function updateOutputOptions() {
     }
     
     const selectedLang = inputLangSelect.value;
-    const options = OUTPUT_OPTIONS[selectedLang] || [];
+    
+    // Get current page language from HTML lang attribute or URL
+    const currentLang = document.documentElement.lang || 
+                       (window.location.pathname.startsWith('/en/') ? 'en' : 'zh-tw');
+    
+    // Use current page language for output options display
+    const options = OUTPUT_OPTIONS[currentLang] || OUTPUT_OPTIONS['zh-tw'];
     
     updateSelectOptions(outputFormatSelect, options, 'outputFormat', 'tai-han');
     setCookie('inputLang', selectedLang);

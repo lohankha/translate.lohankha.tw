@@ -1,0 +1,216 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-09-11 03:13+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: templates/footer.html:4
+msgid "Lohankha 提供"
+msgstr "Lohankha provides"
+
+#: templates/footer.html:5
+msgid "台英、台日、台韓、台華雙向機器翻譯"
+msgstr ""
+"Taiwanese-English, Taiwanese-Japanese, Taiwanese-Korean, Taiwanese-Chinese "
+"bidirectional machine translation"
+
+#: templates/footer.html:6
+msgid "台語漢字羅馬字轉換"
+msgstr "Taiwanese character and romanization conversion"
+
+#: templates/footer.html:7
+msgid "文言文標台語漢字音"
+msgstr "Classical Chinese with Taiwanese character pronunciation"
+
+#: templates/footer.html:8
+msgid "機器翻譯袂當保證結果"
+msgstr ""
+"Machine translation cannot guarantee 100% accuracy. Please use human "
+"proofreading."
+
+#: templates/footer.html:9
+msgid "任何問題請到"
+msgstr "For any questions, please visit"
+
+#: templates/footer.html:9
+msgid "Facebook 迷眾頁留話"
+msgstr "Facebook fan page"
+
+#: templates/footer.html:10
+msgid "協力"
+msgstr "In cooperation with"
+
+#: templates/footer.html:10
+msgid "財團法人信望愛資訊文化藝術基金會"
+msgstr "Faith, Hope, Love Information Culture and Arts Foundation"
+
+#: templates/index.html:8 templates/subtitle.html:8
+msgid "華語, 台語, 翻譯"
+msgstr "Chinese, Taiwanese, Translation"
+
+#: templates/index.html:9 templates/subtitle.html:9
+msgid "提供台英、台日、台韓、台華雙向機器翻譯的服務"
+msgstr ""
+"Providing bidirectional machine translation services for Taiwanese-English, "
+"Taiwanese-Japanese, Taiwanese-Korean, and Taiwanese-Chinese"
+
+#: templates/index.html:11 templates/index.html:13 templates/nav_tabs.html:3
+#: templates/subtitle.html:11 templates/subtitle.html:13
+msgid "Lohankha Translate - 台語翻譯"
+msgstr "Lohankha Translate - Taiwanese Translation"
+
+#: templates/index.html:66
+msgid "翻譯結果"
+msgstr "Translation Result"
+
+#: templates/nav_tabs.html:28
+msgid "翻譯字幕"
+msgstr "Translate Subtitles"
+
+#: templates/nav_tabs.html:31
+msgid "翻譯文字"
+msgstr "Translate Text"
+
+#: templates/subtitle.html:59 templates/subtitle.html:81
+msgid "Choose File"
+msgstr "Choose File"
+
+#: templates/subtitle.html:61 templates/subtitle.html:82
+msgid "No file chosen"
+msgstr "No file chosen"
+
+#: templates/subtitle.html:63
+msgid "Upload"
+msgstr "Upload"
+
+#: templates/subtitle.html:75
+msgid "Error: File is empty! Please select a valid SRT file."
+msgstr "Error: File is empty! Please select a valid SRT file."
+
+#: templates/subtitle.html:76
+msgid "File size cannot exceed 1MB!"
+msgstr "File size cannot exceed 1MB!"
+
+#: templates/subtitle.html:77
+msgid "Selected file:"
+msgstr "Selected file:"
+
+#: templates/subtitle.html:78
+msgid "Processing..."
+msgstr "Processing..."
+
+#: templates/subtitle.html:79
+msgid "Translation completed! File should be downloading..."
+msgstr "Translation completed! File should be downloading..."
+
+#: templates/subtitle.html:80
+msgid "Translation failed. Please try again."
+msgstr "Translation failed. Please try again."
+
+#: tshue/forms.py:13 tshue/forms.py:18 tshue/forms.py:23 tshue/forms.py:28
+#: tshue/forms.py:33 tshue/forms.py:43
+msgid "台文(全漢)"
+msgstr "Taiwanese (Chinese characters only)"
+
+#: tshue/forms.py:14 tshue/forms.py:19 tshue/forms.py:24 tshue/forms.py:29
+#: tshue/forms.py:34 tshue/forms.py:44
+msgid "台文(漢羅)"
+msgstr "Taiwanese (Mixed Chinese and Romanization)"
+
+#: tshue/forms.py:15 tshue/forms.py:20 tshue/forms.py:25 tshue/forms.py:30
+#: tshue/forms.py:35 tshue/forms.py:45
+msgid "台文(全羅)"
+msgstr "Taiwanese (Romanization only)"
+
+#: tshue/forms.py:38 tshue/forms.py:134
+msgid "英文"
+msgstr "English"
+
+#: tshue/forms.py:39 tshue/forms.py:135
+msgid "日文"
+msgstr "Japanese"
+
+#: tshue/forms.py:40 tshue/forms.py:136
+msgid "韓文"
+msgstr "Korean"
+
+#: tshue/forms.py:41 tshue/forms.py:137
+msgid "中文(正體)"
+msgstr "Chinese (Traditional)"
+
+#: tshue/forms.py:42 tshue/forms.py:138
+msgid "中文(簡體)"
+msgstr "Chinese (Simplified)"
+
+#: tshue/forms.py:47
+msgid "台語漢字音"
+msgstr "Taiwanese pronunciation of Chinese characters"
+
+#: tshue/forms.py:113 tshue/forms.py:116
+msgid "請佇遮輸入文字！"
+msgstr "Please enter text here!"
+
+#: tshue/forms.py:126 tshue/forms.py:130
+msgid "輸入"
+msgstr "Input"
+
+#: tshue/forms.py:139
+msgid "台文"
+msgstr "Taiwanese"
+
+#: tshue/forms.py:140
+msgid "文言文"
+msgstr "Classical Chinese"
+
+#: tshue/forms.py:150 tshue/forms.py:154
+msgid "輸出"
+msgstr "Output"
+
+#: tshue/forms.py:170 tshue/forms.py:174
+msgid "羅馬字類型(用佇台文輸出)"
+msgstr "Romanization Type (for Taiwanese output)"
+
+#: tshue/forms.py:177
+msgid "台羅"
+msgstr "Tâi-Lô"
+
+#: tshue/forms.py:178
+msgid "白話字"
+msgstr "Pe̍h-ōe-jī"
+
+#: tshue/forms.py:179
+msgid "台灣字"
+msgstr "Tâioânjī"
+
+#: templates/index.html:272
+msgid "Translation result copied to clipboard"
+msgstr "Translation result copied to clipboard"
+
+#: templates/index.html:281
+msgid "Copy failed, please manually select and copy text"
+msgstr "Copy failed, please manually select and copy text"
+
+#: templates/index.html:221
+msgid "Translation result not found"
+msgstr "Translation result not found"
+
+#: templates/index.html:228
+msgid "No translation result to copy"
+msgstr "No translation result to copy"
+
+#: templates/index.html:377
+msgid "Translation completed!"
+msgstr "Translation completed!"

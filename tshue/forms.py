@@ -1,6 +1,7 @@
 from django import forms
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
+from django.utils.translation import gettext_lazy as _
 
 from .models import WikiData
 
@@ -9,41 +10,41 @@ class TranslationAPIHelper:
     
     OUTPUT_OPTIONS = {
         'en': [
-            ('tai-han', '台文(全漢)'),
-            ('tai-hanlo', '台文(漢羅)'),
-            ('tai-lmj', '台文(全羅)'),
+            ('tai-han', _('台文(全漢)')),
+            ('tai-hanlo', _('台文(漢羅)')),
+            ('tai-lmj', _('台文(全羅)')),
         ],
         'ja': [
-            ('tai-han', '台文(全漢)'),
-            ('tai-hanlo', '台文(漢羅)'),
-            ('tai-lmj', '台文(全羅)'),
+            ('tai-han', _('台文(全漢)')),
+            ('tai-hanlo', _('台文(漢羅)')),
+            ('tai-lmj', _('台文(全羅)')),
         ],
         'ko': [
-            ('tai-han', '台文(全漢)'),
-            ('tai-hanlo', '台文(漢羅)'),
-            ('tai-lmj', '台文(全羅)'),
+            ('tai-han', _('台文(全漢)')),
+            ('tai-hanlo', _('台文(漢羅)')),
+            ('tai-lmj', _('台文(全羅)')),
         ],
         'zh-tw': [
-            ('tai-han', '台文(全漢)'),
-            ('tai-hanlo', '台文(漢羅)'),
-            ('tai-lmj', '台文(全羅)'),
+            ('tai-han', _('台文(全漢)')),
+            ('tai-hanlo', _('台文(漢羅)')),
+            ('tai-lmj', _('台文(全羅)')),
         ],
         'zh-cn': [
-            ('tai-han', '台文(全漢)'),
-            ('tai-hanlo', '台文(漢羅)'),
-            ('tai-lmj', '台文(全羅)'),
+            ('tai-han', _('台文(全漢)')),
+            ('tai-hanlo', _('台文(漢羅)')),
+            ('tai-lmj', _('台文(全羅)')),
         ],
         'tai': [
-            ('en', '英文'), 
-            ('ja', '日文'), 
-            ('ko', '韓文'), 
-            ('zh-tw', '中文(正體)'), 
-            ('zh-cn', '中文(簡體)'), 
-            ('tai-han', '台文(全漢)'),
-            ('tai-hanlo', '台文(漢羅)'),
-            ('tai-lmj', '台文(全羅)'),
+            ('en', _('英文')), 
+            ('ja', _('日文')), 
+            ('ko', _('韓文')), 
+            ('zh-tw', _('中文(正體)')), 
+            ('zh-cn', _('中文(簡體)')), 
+            ('tai-han', _('台文(全漢)')),
+            ('tai-hanlo', _('台文(漢羅)')),
+            ('tai-lmj', _('台文(全羅)')),
         ],
-        'classical': [('tai-lmj', '台語漢字音')],
+        'classical': [('tai-lmj', _('台語漢字音'))],
     }
     
     @staticmethod
@@ -109,10 +110,10 @@ class WikiDataForm(forms.ModelForm):
 
 class SearchForm(forms.Form):
     key = forms.CharField(
-        label="請佇遮輸入文字！",
+        label=_("請佇遮輸入文字！"),
         widget=forms.Textarea(attrs={
             "class": "form-control",
-            "placeholder": "請佇遮輸入文字！",
+            "placeholder": _("請佇遮輸入文字！"),
             "id": "floatingTextarea",
             "rows": "5",
             "maxlength": "500",
@@ -122,21 +123,21 @@ class SearchForm(forms.Form):
 
 class InputModForm(forms.Form):
     input_lang = forms.ChoiceField(
-        label="輸入",
+        label=_("輸入"),
         widget=forms.Select(attrs={
             'class': 'form-select',
             'id': 'inputLangSelect',
-            'aria-label': '輸入',
+            'aria-label': _('輸入'),
             'onchange': 'updateOutputOptions()',
             }),
         choices=[
-            ('en', '英文'),
-            ('ja', '日文'),
-            ('ko', '韓文'),
-            ('zh-tw', '中文(正體)'),
-            ('zh-cn', '中文(簡體)'),
-            ('tai', '台文'),
-            ('classical', '文言文'),
+            ('en', _('英文')),
+            ('ja', _('日文')),
+            ('ko', _('韓文')),
+            ('zh-tw', _('中文(正體)')),
+            ('zh-cn', _('中文(簡體)')),
+            ('tai', _('台文')),
+            ('classical', _('文言文')),
         ], 
     )
     
@@ -146,11 +147,11 @@ class InputModForm(forms.Form):
 
 class OutputModForm(forms.Form):
     output_format = forms.ChoiceField(
-        label="輸出",
+        label=_("輸出"),
         widget=forms.Select(attrs={
             'class': 'form-select',
             'id': 'outputFormatSelect',
-            'aria-label': '輸出',
+            'aria-label': _('輸出'),
             }),
         choices=[], 
     )
@@ -166,16 +167,16 @@ class OutputModForm(forms.Form):
 
 class LmjModForm(forms.Form):
     lmj = forms.ChoiceField(
-        label="羅馬字類型(用佇台文輸出)",
+        label=_("羅馬字類型(用佇台文輸出)"),
         widget=forms.Select(attrs={
             'class': 'form-select',
             'id': 'lmjSelect',
-            'aria-label': '羅馬字類型(用佇台文輸出)',
+            'aria-label': _('羅馬字類型(用佇台文輸出)'),
             }),
         choices=[
-            ('tailo', '台羅'),
-            ('poj', '白話字'),
-            ('toj', '台灣字'),
+            ('tailo', _('台羅')),
+            ('poj', _('白話字')),
+            ('toj', _('台灣字')),
         ], 
     )
     
@@ -188,7 +189,7 @@ class SearchTermForm(forms.Form):
 
 class UploadFileForm(forms.Form):
     file = forms.FileField(
-        label='揀一个檔案',
+        label=_('揀一个檔案'),
     )
 
 class SearchImikForm(forms.Form):
