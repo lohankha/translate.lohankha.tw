@@ -144,6 +144,26 @@
             uploadInfo.innerHTML = "Processing...";
             uploadInfo.style.display = "block";
             fileSubmit.disabled = true;
+            
+            // Reset state after a delay (for file download)
+            setTimeout(function() {
+              uploadInfo.innerHTML = "Translation completed! File should be downloading...";
+              uploadInfo.className = "alert alert-success";
+              // Reset button and file input, but keep success alert visible
+              fileSubmit.disabled = false;
+              fileInput.value = "";
+            }, 3000);
+            
+            // Handle form submission errors
+            uploadForm.addEventListener("error", function() {
+              uploadInfo.innerHTML = "Translation failed. Please try again.";
+              uploadInfo.className = "alert alert-danger";
+              setTimeout(function() {
+                uploadInfo.style.display = "none";
+                uploadInfo.className = "alert alert-info"; // Reset to original style
+                fileSubmit.disabled = false;
+              }, 5000); // Show for 5 seconds
+            });
           }
         });
       }

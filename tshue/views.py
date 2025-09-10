@@ -53,14 +53,11 @@ def translation_proxy(request):
         # Use IP from frontend if provided, otherwise fallback to server detection
         if user_ip and user_ip != '127.0.0.1':
             api_params['ip'] = user_ip
-            print(f"DEBUG: Using frontend IP: {user_ip}")
         else:
             # Fallback to server IP detection
             client_ip = getClientIP(request)
             api_params['ip'] = client_ip
-            print(f"DEBUG: Using server-detected IP: {client_ip}")
         
-        print(f"DEBUG: Generated API parameters: {api_params}")
         
         # Make request to translation API
         api_url = 'http://lohankha.tw:10999'
@@ -98,7 +95,6 @@ def translation_proxy(request):
             
     except requests.RequestException as e:
         error_msg = f'Network error: {str(e)}'
-        print(f"DEBUG: Network error: {str(e)}")
         
         return JsonResponse({
             'success': False,
@@ -106,7 +102,6 @@ def translation_proxy(request):
         }, status=500)
     except Exception as e:
         error_msg = f'Server error: {str(e)}'
-        print(f"DEBUG: Server error: {str(e)}")
         
         return JsonResponse({
             'success': False,
@@ -286,13 +281,9 @@ def getRenderedHTTP(uid, api_params, filename, ip):
     """
     Process SRT file using HTTP API - upload entire file instead of line-by-line
     """
-    print(f"DEBUG: Starting subtitle translation for file: {filename}")
-    print(f"DEBUG: API parameters: {api_params}")
-    print(f"DEBUG: Client IP: {ip}")
     
     fn = "/tmp/%s" % uid
     api_url = 'http://lohankha.tw:10999'
-    print(f"DEBUG: Using API URL: {api_url}")
     
     try:
         # Upload the entire SRT file to the API
@@ -304,9 +295,6 @@ def getRenderedHTTP(uid, api_params, filename, ip):
             if 'inp' in upload_params:
                 del upload_params['inp']
             
-            print(f"DEBUG: Making HTTP request with params: {upload_params}")
-            print(f"DEBUG: Uploading file: {filename}")
-            
             response = requests.post(
                 api_url,
                 data=upload_params,
@@ -314,43 +302,39 @@ def getRenderedHTTP(uid, api_params, filename, ip):
                 timeout=120  # Longer timeout for file upload
             )
             
-            print(f"DEBUG: HTTP response status: {response.status_code}")
-            
             if response.status_code == 200:
                 try:
                     result_data = response.json()
-                    print(f"DEBUG: API response data: {result_data}")
                     
                     # Check if API returned an error
                     if result_data.get('status') == 'error':
                         error_msg = result_data.get('message', 'Unknown error')
-                        print(f"DEBUG: API returned error: {error_msg}")
                         raise Exception(f"Translation API error: {error_msg}")
                     
-                    # Get translated content
-                    translated_content = result_data.get('ret', '')
-                    if not translated_content:
-                        raise Exception("No translated content returned from API")
-                    
-                    print(f"DEBUG: Translation successful, content length: {len(translated_content)}")
-                    
-                    # Yield the translated content
-                    for line in translated_content.splitlines():
-                        yield line.encode() + b'\r\n'
+                    # For SRT mode, API should always return a file path
+                    if result_data.get('status') == 'ok' and 'path' in result_data:
+                        # Download the translated file from the API server
+                        download_url = f"http://lohankha.tw:10999{result_data['path']}"
+                        
+                        download_response = requests.get(download_url, timeout=30)
+                        if download_response.status_code == 200:
+                            translated_content = download_response.text
+                            
+                            # Yield the translated content
+                            for line in translated_content.splitlines():
+                                yield line.encode() + b'\r\n'
+                        else:
+                            raise Exception(f"Failed to download translated file: {download_response.status_code}")
+                    else:
+                        raise Exception("API did not return expected file path for SRT translation")
                         
                 except json.JSONDecodeError as e:
-                    print(f"DEBUG: JSON decode error: {e}")
-                    print(f"DEBUG: Raw response: {response.text[:500]}")
                     raise Exception("Invalid JSON response from translation API")
             else:
-                print(f"DEBUG: API request failed with status {response.status_code}")
-                print(f"DEBUG: Error response: {response.text[:500]}")
                 raise Exception(f"API request failed with status {response.status_code}")
                 
     except Exception as e:
-        print(f"DEBUG: Translation error: {e}")
         # If translation fails, return original file content
-        print("DEBUG: Returning original file content due to error")
         try:
             # Try UTF-8 first
             with open(fn, 'r', encoding='utf8') as f:
@@ -376,7 +360,6 @@ def getRenderedHTTP(uid, api_params, filename, ip):
                     # If all encodings fail, return error message
                     yield f"Error: Unable to read file with any supported encoding".encode()
     
-    print(f"DEBUG: Subtitle translation completed.")
 
 def getRendered(uid, sock, hanmod, lmjmod, outmod, filename, ip):
     fn = "/tmp/%s" % uid
