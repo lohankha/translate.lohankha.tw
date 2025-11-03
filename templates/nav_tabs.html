@@ -3,13 +3,13 @@
   <h4 class="mt-1">{% trans 'Lohankha Translate - 台語翻譯' %}</h4>
   <li class="ms-auto nav-item text-center dropdown">
     <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="color: #000;">
-      <i class="bi bi-translate"></i> {% if LANGUAGE_CODE == 'tb' %}台文{% else %}English{% endif %}
+      <i class="bi bi-translate"></i> {% if LANGUAGE_CODE == 'tb' %}台文{% elif LANGUAGE_CODE == 'en' %}English{% elif LANGUAGE_CODE == 'ja' %}日本語{% elif LANGUAGE_CODE == 'ko' %}한국어{% endif %}
     </a>
     <ul class="dropdown-menu dropdown-menu-end" style="min-width: 100%;">
       <li>
         <form method="post" action="{% url 'set_language' %}" style="display: inline;">
           {% csrf_token %}
-          <input name="next" type="hidden" value="{% if LANGUAGE_CODE == 'en' %}{% if request.path == '/en/' %}/{% elif request.path == '/en/subtitle/' %}/subtitle/{% else %}{{ request.path|slice:'4:' }}{% endif %}{% else %}{{ request.path }}{% endif %}" />
+          <input name="next" type="hidden" value="{% if LANGUAGE_CODE == 'en' or LANGUAGE_CODE == 'ja' or LANGUAGE_CODE == 'ko' %}{% if request.path == '/en/' or request.path == '/ja/' or request.path == '/ko/' %}/{% elif request.path == '/en/subtitle/' or request.path == '/ja/subtitle/' or request.path == '/ko/subtitle/' %}/subtitle/{% else %}{{ request.path|slice:'4:' }}{% endif %}{% else %}{{ request.path }}{% endif %}" />
           <input name="language" type="hidden" value="tb" />
           <button type="submit" class="dropdown-item">台文</button>
         </form>
@@ -17,18 +17,36 @@
       <li>
         <form method="post" action="{% url 'set_language' %}" style="display: inline;">
           {% csrf_token %}
-          <input name="next" type="hidden" value="{% if LANGUAGE_CODE == 'tb' %}/en{{ request.path }}{% else %}{{ request.path }}{% endif %}" />
+          <input name="next" type="hidden" value="{% if LANGUAGE_CODE == 'tb' %}/en{{ request.path }}{% elif LANGUAGE_CODE == 'ja' or LANGUAGE_CODE == 'ko' %}/en/{{ request.path|slice:'4:' }}{% else %}{{ request.path }}{% endif %}" />
           <input name="language" type="hidden" value="en" />
           <button type="submit" class="dropdown-item">English</button>
         </form>
       </li>
+      <li>
+        <form method="post" action="{% url 'set_language' %}" style="display: inline;">
+          {% csrf_token %}
+          <input name="next" type="hidden" value="{% if LANGUAGE_CODE == 'tb' %}/ja{{ request.path }}{% elif LANGUAGE_CODE == 'en' or LANGUAGE_CODE == 'ko' %}/ja/{{ request.path|slice:'4:' }}{% else %}{{ request.path }}{% endif %}" />
+          <input name="language" type="hidden" value="ja" />
+          <button type="submit" class="dropdown-item">日本語</button>
+        </form>
+      </li>
+      <li>
+        <form method="post" action="{% url 'set_language' %}" style="display: inline;">
+          {% csrf_token %}
+          <input name="next" type="hidden" value="{% if LANGUAGE_CODE == 'tb' %}/ko{{ request.path }}{% elif LANGUAGE_CODE == 'ja' or LANGUAGE_CODE == 'en' %}/ko/{{ request.path|slice:'4:' }}{% else %}{{ request.path }}{% endif %}" />
+          <input name="language" type="hidden" value="ko" />
+          <button type="submit" class="dropdown-item">한국어</button>
+        </form>
+      </li>
     </ul>
   </li>
+{% comment %}
   <li class="nav-item text-center {% if request.resolver_match.url_name == 'subtitle' %}active{% endif %}">
-    <a class="nav-link {% if request.resolver_match.url_name == 'subtitle' %}active{% endif %}" href="{% if LANGUAGE_CODE == 'en' %}/en/subtitle/{% else %}/subtitle/{% endif %}"><i class="bi bi-cc-square"></i> {% trans '翻譯字幕' %}</a>
+    <a class="nav-link {% if request.resolver_match.url_name == 'subtitle' %}active{% endif %}" href="{% if LANGUAGE_CODE == 'en' %}/en/subtitle/{% elif LANGUAGE_CODE == 'ja' %}/ja/subtitle/{% elif LANGUAGE_CODE == 'ko' %}/ko/subtitle/{% else %}/subtitle/{% endif %}"><i class="bi bi-cc-square"></i> {% trans '翻譯字幕' %}</a>
   </li>
+{% endcomment %}
   <li class="nav-item text-center {% if request.resolver_match.url_name == 'index' %}active{% endif %}">
-    <a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}" aria-current="page" href="{% if LANGUAGE_CODE == 'en' %}/en/{% else %}/{% endif %}"><i class="bi bi-card-text"></i> {% trans '翻譯文字' %}</a>
+    <a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}" aria-current="page" href="{% if LANGUAGE_CODE == 'en' %}/en/{% elif LANGUAGE_CODE == 'ja' %}/ja/{% elif LANGUAGE_CODE == 'ko' %}/ko/{% else %}/{% endif %}"><i class="bi bi-card-text"></i> {% trans '翻譯文字' %}</a>
   </li>
 
 </ul>

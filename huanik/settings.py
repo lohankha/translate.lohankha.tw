@@ -12,9 +12,8 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import os
 
-from dotenv import load_dotenv
-
-load_dotenv()
+from env import load_env
+load_env()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -127,6 +126,8 @@ USE_TZ = True
 LANGUAGES = [
     ('tb', '台文'),
     ('en', 'English'),
+    ('ja', '日本語'),
+    ('ko', '한국어'),
 ]
 
 # Locale paths

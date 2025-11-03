@@ -15,53 +15,160 @@ function getCookie(name) {
     return null;
 }
 
+// OUTPUT_OPTIONS[siteLang][inputLang]
 const OUTPUT_OPTIONS = {
-    'en': [
-        ['tai-han', 'Taiwanese (Chinese characters only)'],
-        ['tai-hanlo', 'Taiwanese (Mixed Chinese and Romanization)'],
-        ['tai-lmj', 'Taiwanese (Romanization only)'],
-    ],
-    'ja': [
-        ['tai-han', '台文(全漢)'],
-        ['tai-hanlo', '台文(漢羅)'],
-        ['tai-lmj', '台文(全羅)'],
-    ],
-    'ko': [
-        ['tai-han', '台文(全漢)'],
-        ['tai-hanlo', '台文(漢羅)'],
-        ['tai-lmj', '台文(全羅)'],
-    ],
-    'zh-tw': [
-        ['tai-han', '台文(全漢)'],
-        ['tai-hanlo', '台文(漢羅)'],
-        ['tai-lmj', '台文(全羅)'],
-    ],
-    'tai': [
-        ['en', '英文'],
-        ['ja', '日文'],
-        ['ko', '韓文'],
-        ['zh-tw', '中文(正體)'],
-        ['zh-cn', '中文(簡體)'],
-        ['tai-han', '台文(全漢)'],
-        ['tai-hanlo', '台文(漢羅)'],
-        ['tai-lmj', '台文(全羅)'],
-    ],
-    'zh-cn': [
-        ['tai-han', '台文(全漢)'],
-        ['tai-hanlo', '台文(漢羅)'],
-        ['tai-lmj', '台文(全羅)'],
-    ],
-    'tai': [
-        ['en', '英文'],
-        ['ja', '日文'],
-        ['ko', '韓文'],
-        ['zh-tw', '中文(正體)'],
-        ['zh-cn', '中文(簡體)'],
-        ['tai-han', '台文(全漢)'],
-        ['tai-hanlo', '台文(漢羅)'],
-        ['tai-lmj', '台文(全羅)'],
-    ],
-    'classical': [['tai-lmj', '台語漢字音']]
+    'en': {
+        'en': [
+            ['tai-han', 'Taiwanese (Chinese characters only)'],
+            ['tai-hanlo', 'Taiwanese (Mixed Chinese and Romanization)'],
+            ['tai-lmj', 'Taiwanese (Romanization only)'],
+        ],
+        'ja': [
+            ['tai-han', 'Taiwanese (Chinese characters only)'],
+            ['tai-hanlo', 'Taiwanese (Mixed Chinese and Romanization)'],
+            ['tai-lmj', 'Taiwanese (Romanization only)'],
+        ],
+        'ko': [
+            ['tai-han', 'Taiwanese (Chinese characters only)'],
+            ['tai-hanlo', 'Taiwanese (Mixed Chinese and Romanization)'],
+            ['tai-lmj', 'Taiwanese (Romanization only)'],
+        ],
+        'zh-tw': [
+            ['tai-han', 'Taiwanese (Chinese characters only)'],
+            ['tai-hanlo', 'Taiwanese (Mixed Chinese and Romanization)'],
+            ['tai-lmj', 'Taiwanese (Romanization only)'],
+        ],
+        'zh-cn': [
+            ['tai-han', 'Taiwanese (Chinese characters only)'],
+            ['tai-hanlo', 'Taiwanese (Mixed Chinese and Romanization)'],
+            ['tai-lmj', 'Taiwanese (Romanization only)'],
+        ],
+        'tai': [
+            ['en', 'English'],
+            ['ja', 'Japanese'],
+            ['ko', 'Korean'],
+            ['zh-tw', 'Chinese (Traditional)'],
+            ['zh-cn', 'Chinese (Simplified)'],
+            ['tai-han', 'Taiwanese (Chinese characters only)'],
+            ['tai-hanlo', 'Taiwanese (Mixed Chinese and Romanization)'],
+            ['tai-lmj', 'Taiwanese (Romanization only)'],
+        ],
+        'classical': [['tai-lmj', 'Taiwanese pronunciation of Chinese characters']]
+    },
+    'ja': {
+        'en': [
+            ['tai-han', '台湾語(漢字のみの表記)'],
+            ['tai-hanlo', '台湾語(漢字とローマ字の混合表記)'],
+            ['tai-lmj', '台湾語(ローマ字のみの表記)'],
+        ],
+        'ja': [
+            ['tai-han', '台湾語(漢字のみの表記)'],
+            ['tai-hanlo', '台湾語(漢字とローマ字の混合表記)'],
+            ['tai-lmj', '台湾語(ローマ字のみの表記)'],
+        ],
+        'ko': [
+            ['tai-han', '台湾語(漢字のみの表記)'],
+            ['tai-hanlo', '台湾語(漢字とローマ字の混合表記)'],
+            ['tai-lmj', '台湾語(ローマ字のみの表記)'],
+        ],
+        'zh-tw': [
+            ['tai-han', '台湾語(漢字のみの表記)'],
+            ['tai-hanlo', '台湾語(漢字とローマ字の混合表記)'],
+            ['tai-lmj', '台湾語(ローマ字のみの表記)'],
+        ],
+        'zh-cn': [
+            ['tai-han', '台湾語(漢字のみの表記)'],
+            ['tai-hanlo', '台湾語(漢字とローマ字の混合表記)'],
+            ['tai-lmj', '台湾語(ローマ字のみの表記)'],
+        ],
+        'tai': [
+            ['en', '英語'],
+            ['ja', '日本語'],
+            ['ko', '韓国語'],
+            ['zh-tw', '中国語(繁体字)'],
+            ['zh-cn', '中国語(簡体字)'],
+            ['tai-han', '台湾語(漢字のみの表記)'],
+            ['tai-hanlo', '台湾語(漢字とローマ字の混合表記)'],
+            ['tai-lmj', '台湾語(ローマ字のみの表記)'],
+        ],
+        'classical': [['tai-lmj', '台湾語の漢字音読み']]
+    },
+    'ko': {
+        'en': [
+            ['tai-han', '대만어(한자만 표기)'],
+            ['tai-hanlo', '대만어(한자와 로마자 혼용 표기)'],
+            ['tai-lmj', '대만어(로마자만 표기)'],
+        ],
+        'ja': [
+            ['tai-han', '대만어(한자만 표기)'],
+            ['tai-hanlo', '대만어(한자와 로마자 혼용 표기)'],
+            ['tai-lmj', '대만어(로마자만 표기)'],
+        ],
+        'ko': [
+            ['tai-han', '대만어(한자만 표기)'],
+            ['tai-hanlo', '대만어(한자와 로마자 혼용 표기)'],
+            ['tai-lmj', '대만어(로마자만 표기)'],
+        ],
+        'zh-tw': [
+            ['tai-han', '대만어(한자만 표기)'],
+            ['tai-hanlo', '대만어(한자와 로마자 혼용 표기)'],
+            ['tai-lmj', '대만어(로마자만 표기)'],
+        ],
+        'zh-cn': [
+            ['tai-han', '대만어(한자만 표기)'],
+            ['tai-hanlo', '대만어(한자와 로마자 혼용 표기)'],
+            ['tai-lmj', '대만어(로마자만 표기)'],
+        ],
+        'tai': [
+            ['en', '영어'],
+            ['ja', '일본어'],
+            ['ko', '한국어'],
+            ['zh-tw', '중국어(번체자)'],
+            ['zh-cn', '중국어(간체자)'],
+            ['tai-han', '대만어(한자만 표기)'],
+            ['tai-hanlo', '대만어(한자와 로마자 혼용 표기)'],
+            ['tai-lmj', '대만어(로마자만 표기)'],
+        ],
+        'classical': [['tai-lmj', '대만어 한자 음독']]
+    },
+    'tb': {
+        'en': [
+            ['tai-han', '台文(全漢)'],
+            ['tai-hanlo', '台文(漢羅)'],
+            ['tai-lmj', '台文(全羅)'],
+        ],
+        'ja': [
+            ['tai-han', '台文(全漢)'],
+            ['tai-hanlo', '台文(漢羅)'],
+            ['tai-lmj', '台文(全羅)'],
+        ],
+        'ko': [
+            ['tai-han', '台文(全漢)'],
+            ['tai-hanlo', '台文(漢羅)'],
+            ['tai-lmj', '台文(全羅)'],
+        ],
+        'zh-tw': [
+            ['tai-han', '台文(全漢)'],
+            ['tai-hanlo', '台文(漢羅)'],
+            ['tai-lmj', '台文(全羅)'],
+        ],
+        'zh-cn': [
+            ['tai-han', '台文(全漢)'],
+            ['tai-hanlo', '台文(漢羅)'],
+            ['tai-lmj', '台文(全羅)'],
+        ],
+        'tai': [
+            ['en', '英文'],
+            ['ja', '日文'],
+            ['ko', '韓文'],
+            ['zh-tw', '中文(正體)'],
+            ['zh-cn', '中文(簡體)'],
+            ['tai-han', '台文(全漢)'],
+            ['tai-hanlo', '台文(漢羅)'],
+            ['tai-lmj', '台文(全羅)'],
+        ],
+        'classical': [['tai-lmj', '台語漢字音']]
+    },
 };
 
 function updateSelectOptions(selectElement, options, cookieName = null, defaultValue = null) {
@@ -100,11 +207,10 @@ function updateOutputOptions() {
     const selectedLang = inputLangSelect.value;
     
     // Get current page language from HTML lang attribute or URL
-    const currentLang = document.documentElement.lang || 
-                       (window.location.pathname.startsWith('/en/') ? 'en' : 'zh-tw');
+    const siteLang = document.documentElement.lang || 
+                       (window.location.pathname.startsWith('/en/') ? 'en' : window.location.pathname.startsWith('/ja/') ? 'ja' : window.location.pathname.startsWith('/ko/') ? 'ko' : 'tb');
     
-    // Use current page language for output options display
-    const options = OUTPUT_OPTIONS[currentLang] || OUTPUT_OPTIONS['zh-tw'];
+    const options = OUTPUT_OPTIONS[siteLang][selectedLang] || OUTPUT_OPTIONS[siteLang]['zh-tw'];
     
     updateSelectOptions(outputFormatSelect, options, 'outputFormat', 'tai-han');
     setCookie('inputLang', selectedLang);
@@ -238,11 +344,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const savedInputLang = getCookie('inputLang');
     const inputLangSelect = document.getElementById('inputLangSelect');
     
+    // Get current page language from HTML lang attribute or URL
+    const siteLang = document.documentElement.lang || 
+                       (window.location.pathname.startsWith('/en/') ? 'en' : window.location.pathname.startsWith('/ja/') ? 'ja' : window.location.pathname.startsWith('/ko/') ? 'ko' : 'tb');
+
     if (inputLangSelect) {
-        if (savedInputLang && Object.keys(OUTPUT_OPTIONS).includes(savedInputLang)) {
+        if (savedInputLang && Object.keys(OUTPUT_OPTIONS[siteLang]).includes(savedInputLang)) {
             inputLangSelect.value = savedInputLang;
-        } else {
+        } else if (siteLang == 'tb') {
             inputLangSelect.value = 'zh-tw';
+        } else {
+            inputLangSelect.value = siteLang;
         }
     }
     

@@ -42,8 +42,12 @@ msgid "任何問題請到"
 msgstr "任何問題請到"
 
 #: templates/footer.html:9
-msgid "Facebook 迷眾頁留話"
-msgstr "Facebook 迷眾頁留話"
+msgid "Facebook 迷眾頁"
+msgstr "Facebook 迷眾頁"
+
+#: templates/footer.html:9
+msgid "留話"
+msgstr "留話"
 
 #: templates/footer.html:10
 msgid "協力"
@@ -55,7 +59,7 @@ msgstr "財團法人信望愛資訊文化藝術基金會"
 
 #: templates/index.html:8 templates/subtitle.html:8
 msgid "華語, 台語, 翻譯"
-msgstr "華語, 台語, 翻譯"
+msgstr "英語, 日語, 韓語, 華語, 台語, 翻譯"
 
 #: templates/index.html:9 templates/subtitle.html:9
 msgid "提供台英、台日、台韓、台華雙向機器翻譯的服務"
@@ -100,19 +104,19 @@ msgstr "檔案大小袂當超過1MB！"
 
 #: templates/subtitle.html:77
 msgid "Selected file:"
-msgstr "揀著檔案："
+msgstr "揀的檔案："
 
 #: templates/subtitle.html:78
 msgid "Processing..."
-msgstr "當在處理中..."
+msgstr "處理中..."
 
 #: templates/subtitle.html:79
 msgid "Translation completed! File should be downloading..."
-msgstr "翻譯完成！檔案當在下載..."
+msgstr "翻譯完成！檔案當咧下載..."
 
 #: templates/subtitle.html:80
 msgid "Translation failed. Please try again."
-msgstr "翻譯失敗。請閣試。"
+msgstr "翻譯失敗。請閣試一擺。"
 
 #: tshue/forms.py:13 tshue/forms.py:18 tshue/forms.py:23 tshue/forms.py:28
 #: tshue/forms.py:33 tshue/forms.py:43
@@ -155,7 +159,7 @@ msgstr "台語漢字音"
 
 #: tshue/forms.py:113 tshue/forms.py:116
 msgid "請佇遮輸入文字！"
-msgstr "請佇遮輸入文字！"
+msgstr "請佇遮輸入文字！漢字羅馬字轉換，輸入語言請選台文。文言文標音，請選文言文。"
 
 #: tshue/forms.py:126 tshue/forms.py:130
 msgid "輸入"
@@ -195,19 +199,19 @@ msgstr "揀一个檔案"
 
 #: templates/index.html:272
 msgid "Translation result copied to clipboard"
-msgstr "翻譯結果拷比到剪貼簿"
+msgstr "翻譯結果khop-pih到剪貼簿"
 
 #: templates/index.html:281
 msgid "Copy failed, please manually select and copy text"
-msgstr "拷比失敗，請自己選擇閣拷比文字"
+msgstr "Khop-pih失敗，請自己選擇欲khop-pih的文字"
 
 #: templates/index.html:221
 msgid "Translation result not found"
-msgstr "尋無翻譯結果"
+msgstr "揣無翻譯結果"
 
 #: templates/index.html:228
 msgid "No translation result to copy"
-msgstr "無翻譯結果通拷比"
+msgstr "無翻譯結果通khop-pih"
 
 #: templates/index.html:377
 msgid "Translation completed!"

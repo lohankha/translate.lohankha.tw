@@ -60,7 +60,11 @@ def translation_proxy(request):
         
         
         # Make request to translation API
-        api_url = 'http://lohankha.tw:10999'
+        if api_params['mode'] == 'srt':
+            api_url = str(os.getenv('API_URL'))
+        else:
+            api_url = str(os.getenv('API_URL'))
+
         response = requests.post(
             api_url,
             data=api_params,
@@ -283,8 +287,9 @@ def getRenderedHTTP(uid, api_params, filename, ip):
     """
     
     fn = "/tmp/%s" % uid
-    api_url = 'http://lohankha.tw:10999'
-    
+    api_url = str(os.getenv('API_URL'))
+#    api_url = "http://localhost:10999"
+
     try:
         # Upload the entire SRT file to the API
         with open(fn, 'rb') as f:
@@ -314,7 +319,7 @@ def getRenderedHTTP(uid, api_params, filename, ip):
                     # For SRT mode, API should always return a file path
                     if result_data.get('status') == 'ok' and 'path' in result_data:
                         # Download the translated file from the API server
-                        download_url = f"http://lohankha.tw:10999{result_data['path']}"
+                        download_url = f"{api_url}{result_data['path']}"
                         
                         download_response = requests.get(download_url, timeout=30)
                         if download_response.status_code == 200:

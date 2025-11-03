@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 import os
 import sys
+from env import load_env
 
 if __name__ == "__main__":
+    load_env()
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "huanik.settings")
     try:
         from django.core.management import execute_from_command_line

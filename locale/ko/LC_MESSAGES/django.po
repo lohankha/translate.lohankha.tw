@@ -12,209 +12,208 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: en\n"
+"Language: ko\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: templates/footer.html:4
 msgid "Lohankha 提供"
-msgstr "Lohankha provides"
+msgstr "Lohankha에서는 다음과 같은 서비스를 제공하고 있습니다."
 
 #: templates/footer.html:5
 msgid "台英、台日、台韓、台華雙向機器翻譯"
-msgstr ""
-"Taiwanese-English, Taiwanese-Japanese, Taiwanese-Korean, Taiwanese-Chinese "
-"bidirectional machine translation"
+msgstr "대만어–영어 / 대만어–일본어 / 대만어–한국어 / 대만어–중국어 간의 양방향 번역"
 
 #: templates/footer.html:6
 msgid "台語漢字羅馬字轉換"
-msgstr "Taiwanese character and romanization conversion"
+msgstr "대만어 한자와 로마자 간의 양방향 변환"
 
 #: templates/footer.html:7
 msgid "文言文標台語漢字音"
-msgstr "Classical Chinese with Taiwanese character pronunciation"
+msgstr "한문에 대만어 한자 음을 부여"
 
 #: templates/footer.html:8
 msgid "機器翻譯袂當保證結果"
-msgstr ""
-"Machine translation cannot guarantee complete accuracy. Human proofreading is "
-"recommended."
+msgstr "기계번역은 100% 정확성을 보장할 수 없으므로 반드시 사람이 교정을 해주시기 바랍니다."
 
 #: templates/footer.html:9
 msgid "任何問題請到"
-msgstr "For any questions, feel free to leave a comment on "
+msgstr "궁금한 점이 있으시면"
 
 #: templates/footer.html:9
 msgid "Facebook 迷眾頁"
-msgstr "our Facebook page"
+msgstr "페이스북 공식 페이지"
 
 #: templates/footer.html:9
 msgid "留話"
-msgstr "."
+msgstr "에 댓글로 남겨 주세요."
 
 #: templates/footer.html:10
 msgid "協力"
-msgstr "In cooperation with"
+msgstr "협력"
 
 #: templates/footer.html:10
 msgid "財團法人信望愛資訊文化藝術基金會"
-msgstr "Faith-Hope-Love Information, Arts and Culture Foundation"
+msgstr "재단법인 신망애정보문화예술기금회"
 
 #: templates/index.html:8 templates/subtitle.html:8
 msgid "華語, 台語, 翻譯"
-msgstr "English, Japanese, Korean, Chinese, Taiwanese, Translation"
+msgstr "영어, 일본어, 한국어, 중국어, 대만어, 번역"
 
 #: templates/index.html:9 templates/subtitle.html:9
 msgid "提供台英、台日、台韓、台華雙向機器翻譯的服務"
-msgstr ""
-"Bidirectional machine translation services: Taiwanese-English, "
-"Taiwanese-Japanese, Taiwanese-Korean, and Taiwanese-Chinese."
+msgstr "대만어–영어 / 대만어–일본어 / 대만어–한국어 / 대만어–중국어 간의 양방향 번역"
 
 #: templates/index.html:11 templates/index.html:13 templates/nav_tabs.html:3
 #: templates/subtitle.html:11 templates/subtitle.html:13
 msgid "Lohankha Translate - 台語翻譯"
-msgstr "Lohankha Translate - Taiwanese Translation"
+msgstr "Lohankha Translate - 대만어 번역"
 
 #: templates/index.html:66
 msgid "翻譯結果"
-msgstr "Translation Result"
+msgstr "번역 결과"
 
 #: templates/nav_tabs.html:28
 msgid "翻譯字幕"
-msgstr "Translate Subtitles"
+msgstr "자막 번역"
 
 #: templates/nav_tabs.html:31
 msgid "翻譯文字"
-msgstr "Translate Text"
+msgstr "텍스트 번역"
 
 #: templates/subtitle.html:59 templates/subtitle.html:81
 msgid "Choose File"
-msgstr "Select a file"
+msgstr "파일 선택"
 
 #: templates/subtitle.html:61 templates/subtitle.html:82
 msgid "No file chosen"
-msgstr "No file selected"
+msgstr "파일이 선택되지 않았습니다."
 
 #: templates/subtitle.html:63
 msgid "Upload"
-msgstr "Upload"
+msgstr "업로드"
 
 #: templates/subtitle.html:75
 msgid "Error: File is empty! Please select a valid SRT file."
-msgstr "Error: The file is empty! Please select a valid SRT file."
+msgstr "오류: 빈 파일이 선택되었습니다. 유효한 SRT 파일을 선택해 주세요."
 
 #: templates/subtitle.html:76
 msgid "File size cannot exceed 1MB!"
-msgstr "The file size cannot exceed 1MB!"
+msgstr "최대 파일 크기는 1MB입니다."
 
 #: templates/subtitle.html:77
 msgid "Selected file:"
-msgstr "The selected file:"
+msgstr "선택된 파일:"
 
 #: templates/subtitle.html:78
 msgid "Processing..."
-msgstr "Processing..."
+msgstr "처리 중..."
 
 #: templates/subtitle.html:79
 msgid "Translation completed! File should be downloading..."
-msgstr "Translation completed! The file download should begin shortly..."
+msgstr "번역 완료! 다운로드가 시작됩니다..."
 
 #: templates/subtitle.html:80
 msgid "Translation failed. Please try again."
-msgstr "Translation failed. Please try again."
+msgstr "번역에 실패했습니다. 다시 한 번 시도해 주세요."
 
 #: tshue/forms.py:13 tshue/forms.py:18 tshue/forms.py:23 tshue/forms.py:28
 #: tshue/forms.py:33 tshue/forms.py:43
 msgid "台文(全漢)"
-msgstr "Taiwanese (Chinese characters only)"
+msgstr "대만어(한자만 표기)"
 
 #: tshue/forms.py:14 tshue/forms.py:19 tshue/forms.py:24 tshue/forms.py:29
 #: tshue/forms.py:34 tshue/forms.py:44
 msgid "台文(漢羅)"
-msgstr "Taiwanese (Mixed Chinese and Romanization)"
+msgstr "대만어(한자와 로마자 혼용 표기)"
 
 #: tshue/forms.py:15 tshue/forms.py:20 tshue/forms.py:25 tshue/forms.py:30
 #: tshue/forms.py:35 tshue/forms.py:45
 msgid "台文(全羅)"
-msgstr "Taiwanese (Romanization only)"
+msgstr "대만어(로마자만 표기)"
 
 #: tshue/forms.py:38 tshue/forms.py:134
 msgid "英文"
-msgstr "English"
+msgstr "영어"
 
 #: tshue/forms.py:39 tshue/forms.py:135
 msgid "日文"
-msgstr "Japanese"
+msgstr "일본어"
 
 #: tshue/forms.py:40 tshue/forms.py:136
 msgid "韓文"
-msgstr "Korean"
+msgstr "한국어"
 
 #: tshue/forms.py:41 tshue/forms.py:137
 msgid "中文(正體)"
-msgstr "Chinese (Traditional)"
+msgstr "중국어(번체자)"
 
 #: tshue/forms.py:42 tshue/forms.py:138
 msgid "中文(簡體)"
-msgstr "Chinese (Simplified)"
+msgstr "중국어(간체자)"
 
 #: tshue/forms.py:47
 msgid "台語漢字音"
-msgstr "Taiwanese pronunciation of Chinese characters"
+msgstr "대만어 한자 음독"
 
 #: tshue/forms.py:113 tshue/forms.py:116
 msgid "請佇遮輸入文字！"
-msgstr "Please enter text here!"
+msgstr "여기에 텍스트를 입력해 주세요."
 
 #: tshue/forms.py:126 tshue/forms.py:130
 msgid "輸入"
-msgstr "Input"
+msgstr "입력"
 
 #: tshue/forms.py:139
 msgid "台文"
-msgstr "Taiwanese"
+msgstr "대만어"
 
 #: tshue/forms.py:140
 msgid "文言文"
-msgstr "Classical Chinese"
+msgstr "한문"
 
 #: tshue/forms.py:150 tshue/forms.py:154
 msgid "輸出"
-msgstr "Output"
+msgstr "출력"
 
 #: tshue/forms.py:170 tshue/forms.py:174
 msgid "羅馬字類型(用佇台文輸出)"
-msgstr "Romanization Type (for Taiwanese output)"
+msgstr "로마자 종류 (대만어 출력용)"
 
 #: tshue/forms.py:177
 msgid "台羅"
-msgstr "Tâi-Lô"
+msgstr "대만 로마자"
 
 #: tshue/forms.py:178
 msgid "白話字"
-msgstr "Pe̍h-ōe-jī"
+msgstr "백화자"
 
 #: tshue/forms.py:179
 msgid "台灣字"
-msgstr "Tâioânjī"
+msgstr "대만자"
+
+#: tshue/forms.py:192
+msgid "揀一个檔案"
+msgstr "파일 선택"
 
 #: templates/index.html:272
 msgid "Translation result copied to clipboard"
-msgstr "The translation result has been copied to the clipboard"
+msgstr "클립보드에 복사되었습니다."
 
 #: templates/index.html:281
 msgid "Copy failed, please manually select and copy text"
-msgstr "Copy failed. Please manually select the text to copy"
+msgstr "복사하지 못했습니다. 직접 복사해 주세요."
 
 #: templates/index.html:221
 msgid "Translation result not found"
-msgstr "Translation result not found"
+msgstr "번역 결과 없음"
 
 #: templates/index.html:228
 msgid "No translation result to copy"
-msgstr "No translation result to copy"
+msgstr "복사 대상이 비어 있습니다."
 
 #: templates/index.html:377
 msgid "Translation completed!"
-msgstr "Translation complete!"
+msgstr "번역 완료!"
+
