@@ -15,6 +15,11 @@ import os
 from env import load_env
 load_env()
 
+AUTHORIZED_USERS = str(os.getenv('AUTHORIZED_USERS')).split(',')
+DB_API_URL = str(os.getenv('DB_API_URL'))
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/'
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -42,7 +47,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-#    'tshue',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+#    'h2tdb',
 ]
 
 MIDDLEWARE = [
@@ -55,6 +65,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'huanik.urls'
@@ -174,3 +185,37 @@ CORS_ALLOW_ALL_ORIGINS = DEBUG
 # Allow credentials to be included in CORS requests
 CORS_ALLOW_CREDENTIALS = True
 SESSION_CACHE_ALIAS = 'default'
+
+SITE_ID = 1
+
+AUTHENTICATION_BACKENDS = (
+#    'django.contrib.auth.backends.ModelBackend',         # 預設認證
+    'allauth.account.auth_backends.AuthenticationBackend',   # allauth 認證
+)
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': str(os.getenv('GOOGLE_CLIENT_ID')),
+            'secret': str(os.getenv('GOOGLE_CLIENT_SECRET')),
+            'key': ''
+        }
+    }
+}
+
+LOGIN_REDIRECT_URL = '/'
+
+# Optional: 關閉原生帳號註冊登入（只有 Google 登入也行）
+ACCOUNT_AUTHENTICATION_METHOD = 'email'      # 随便写什么不重要，因为下面的关闭会生效
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_ADAPTER = 'huanik.account_adapter.NoNewUsersAccountAdapter'
+SOCIALACCOUNT_AUTO_SIGNUP = True             # 自动创建账户
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
+
+# 彻底关掉用户名/密码登录和注册界面
+ACCOUNT_LOGIN_ON_PASSWORD_RESET = False
+SOCIALACCOUNT_QUERY_EMAIL = True             # 登录时如果没有提供email，就问
+
+ACCOUNT_LOGOUT_ON_GET = True

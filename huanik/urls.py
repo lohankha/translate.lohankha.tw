@@ -22,9 +22,11 @@ from django.conf.urls.i18n import i18n_patterns
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('i18n/', include('django.conf.urls.i18n')),
+    path('accounts/', include('allauth.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 urlpatterns += i18n_patterns(
-    path('', include('tshue.urls')),
+    path('', include(('tshue.urls', 'tshue'), namespace='tshue')),
+#    path('h2tdb', include(('h2tdb.urls', 'h2tdb'), namespace='h2tdb')),
     prefix_default_language=False,
 )

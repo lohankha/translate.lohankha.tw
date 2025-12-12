@@ -192,6 +192,36 @@ class UploadFileForm(forms.Form):
         label=_('揀一个檔案'),
     )
 
-class SearchImikForm(forms.Form):
-    key = forms.CharField()
 
+LANG_CHOICES = [
+    ('en', _('英文')),
+    ('de', _('德文')),
+]
+
+LMJ_CHOICES = [
+    ('0', _('台羅')),
+    ('1', _('白話字')),
+    ('2', _('台灣字')),
+]
+class SearchImikForm(forms.Form):
+    inp = forms.CharField(
+        label=_("輸入文字"),
+        max_length=100,
+        widget=forms.TextInput(attrs={
+            'placeholder': _("請輸入要翻譯的文字"),
+            'style': 'width:300px;'
+        }),
+        required=True,
+    )
+    lang = forms.ChoiceField(
+        label=_("語言"),
+        choices=LANG_CHOICES,
+        required=True,
+        widget=forms.Select
+    )
+    lmjmod = forms.ChoiceField(
+        label=_("羅馬字系統"),
+        choices=LMJ_CHOICES,
+        required=True,
+        widget=forms.Select
+    )

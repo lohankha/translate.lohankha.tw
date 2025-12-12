@@ -188,50 +188,66 @@ def terms(request):
     }
     return render(request, 'terms.html', context)
 
+def flatten_ref(ref):
+    flat = []
+    for iksu, lomaji_dict in ref.items():
+        iksu_total = sum(len(tlist) for tlist in lomaji_dict.values())
+        lomaji_items = list(lomaji_dict.items())
+        iksu_written = False
+        for lomaji, tshuttian_list in lomaji_items:
+            lomaji_written = False
+            for tshuttian in tshuttian_list:
+                flat.append({
+                    'iksu': iksu,
+                    'lomaji': lomaji,
+                    'tshuttian': tshuttian,
+                    'iksu_rowspan': iksu_total if not iksu_written else 0,
+                    'lomaji_rowspan': len(tshuttian_list) if not lomaji_written else 0,
+                })
+                lomaji_written = True
+            iksu_written = True
+    return flat
+
 def imik(request):
-    form = SearchImikForm(request.POST or None)
-    if form.is_valid():
-        key = form.cleaned_data['key']
-        form = SearchImikForm()
-    else:
-        key = ''
-
-    lines = []
-    if key:
-        import socket
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.connect(("localhost", 10999))
-        isStart = False
-        isSent = False
-        output = b""
-        while True:
-            if not isStart:
-                response = sock.recv(1024).decode()
-                if response == "$ ":
-                    isStart = True
-                continue
+    api_url = str(os.getenv('API_URL'))
+    result = {}
+    if request.method == 'POST':
+        form = SearchImikForm(request.POST)
+        if form.is_valid():
+            inp = form.cleaned_data['inp']
+            lang = form.cleaned_data['lang']
+            lmjmod = form.cleaned_data['lmjmod']
+            # ...與前述程式相同
+            payload = {
+                "cmd": "imik",
+                "lang": lang,
+                "inp": inp,
+                "lmjmod": lmjmod
+            }
+            try:
+                r = requests.post(api_url, data=payload)
+                res = r.json()
+            except Exception as e:
+                result['error'] = str(e)
             else:
-                if not isSent:
-                    string = "TRANSLATE %s" % (key.replace('\r\n', '\n'))
-                    sock.sendall(string.encode())
-                    isSent = True
+                if res.get('status') == 'ok':
+                    result['ok'] = True
+                    result['inp'] = inp
+                    result['ipa'] = res.get('ipa', '')
+                    result['output'] = res.get('output', '')
+                    result['lo'] = res.get('lmj', '')
+                    result['sug'] = res.get('suggestion', [])
+                    result['ref'] = flatten_ref(res.get('ref', {}))
                 else:
-                    response = sock.recv(1024)
-                    output += response
-                    try:
-                        if "DONE" in response.decode():
-                            break
-                    except:
-                        pass
-        for line in output.decode().split('\n'):
-            if line.startswith('DONE'):
-                break
-            lines.append(line)
-        sock.close()
-
+                    result['error'] = res.get('message', 'Unknown error')
+        else:
+            # 表單驗證錯誤
+            result['error'] = 'Please input the form correctly.'
+    else:
+        form = SearchImikForm()
     context = {
-        'trans': {'lines': lines},
         'form': form,
+        'result': result,
     }
     return render(request, 'imik.html', context)
 
