@@ -217,3 +217,38 @@ msgstr "コピー対象が空です。"
 msgid "Translation completed!"
 msgstr "翻訳完了！"
 
+#: tshue/forms.py:213
+msgid "請佇遮輸入文字! "
+msgstr "ここにテキストを入力してください。"
+
+#: templates/imik.html:13 templates/imik.html:45
+msgid "Lohankha外來語音譯系統"
+msgstr "Lohankha 外来語音訳システム"
+
+#: templates/imik.html:46
+msgid "Lohankha提供台語外來語音譯。請佇下跤輸入欲音譯成做台語的英語。"
+msgstr "Lohankhaは台湾語の外来語音訳を提供しています。下の欄に台湾語へ音訳したい英語を入力してください。"
+
+#: templates/imik.html:84
+msgid "音譯結果"
+msgstr "音訳結果"
+
+#: templates/imik.html:88
+msgid "原詞"
+msgstr "原語"
+
+#: templates/imik.html:89
+msgid "國際音標"
+msgstr "国際音声記号"
+
+#: templates/imik.html:90 templates/imik.html:106 templates/imik.html:125
+msgid "譯詞"
+msgstr "訳語"
+
+#: templates/imik.html:91 templates/imik.html:107 templates/imik.html:126
+msgid "羅馬字"
+msgstr "ローマ字"
+
+#: templates/nav_tabs.html:66
+msgid "外來語音譯"
+msgstr "外来語音訳"

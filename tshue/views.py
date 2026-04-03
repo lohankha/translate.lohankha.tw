@@ -4,11 +4,13 @@ import os
 import socket
 
 import requests
+from django.conf import settings
 from django.http import (FileResponse, HttpResponse, HttpResponseRedirect,
                          JsonResponse, StreamingHttpResponse)
 from django.shortcuts import render
 from django.template import RequestContext
 from django.urls import reverse
+from django.utils.translation import gettext as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django_ratelimit.decorators import ratelimit
@@ -19,6 +21,21 @@ from .forms import (InputModForm, LmjModForm, OutputModForm, SearchForm,
 from .models import WikiData
 
 
+def should_use_mock_translation():
+    raw = os.getenv('MOCK_TRANSLATION')
+    if raw is None:
+        return settings.DEBUG
+    return raw.strip().lower() in ('1', 'true', 'yes', 'on')
+
+
+def build_mock_translation_result(input_text):
+    safe_text = input_text or ''
+    return {
+        'output': f"[MOCK] {safe_text}",
+        'lmj': safe_text,
+    }
+
+
 @csrf_exempt
 @require_http_methods(["POST"])
 @ratelimit(key='user_or_ip', rate='100/h')
@@ -26,6 +43,7 @@ def translation_proxy(request):
     """
     Proxy endpoint for translation API to handle CORS issues
     """
+    input_text = ''
     try:
         # Get form data from request
         input_lang = request.POST.get('input_lang')
@@ -98,8 +116,18 @@ def translation_proxy(request):
             }, status=response.status_code)
             
     except requests.RequestException as e:
-        error_msg = f'Network error: {str(e)}'
-        
+        if should_use_mock_translation():
+            return JsonResponse({
+                'success': True,
+                'result': build_mock_translation_result(input_text),
+                'mock': True,
+            })
+
+        error_msg = (
+            f'Network error: {str(e)}. '
+            'Translation API is unavailable. Please check API_URL or enable MOCK_TRANSLATION=1.'
+        )
+
         return JsonResponse({
             'success': False,
             'error': error_msg
@@ -228,7 +256,19 @@ def imik(request):
                 r = requests.post(api_url, data=payload)
                 res = r.json()
             except Exception as e:
-                result['error'] = str(e)
+                if should_use_mock_translation():
+                    result['ok'] = True
+                    result['inp'] = inp
+                    result['ipa'] = '-'
+                    result['output'] = f"[MOCK] {inp}"
+                    result['lo'] = inp
+                    result['sug'] = []
+                    result['ref'] = []
+                else:
+                    result['error'] = (
+                        f"{str(e)}. Translation API is unavailable. "
+                        "Please check API_URL or enable MOCK_TRANSLATION=1."
+                    )
             else:
                 if res.get('status') == 'ok':
                     result['ok'] = True
@@ -242,7 +282,7 @@ def imik(request):
                     result['error'] = res.get('message', 'Unknown error')
         else:
             # 表單驗證錯誤
-            result['error'] = 'Please input the form correctly.'
+            result['error'] = _('Please input the form correctly.')
     else:
         form = SearchImikForm()
     context = {

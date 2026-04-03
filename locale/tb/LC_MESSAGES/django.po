@@ -217,3 +217,10 @@ msgstr "無翻譯結果通khop-pih"
 msgid "Translation completed!"
 msgstr "翻譯完成！"
 
+#: templates/nav_tabs.html:66
+msgid "外來語音譯"
+msgstr "外來語音譯"
+
+#: tshue/forms.py:213
+msgid "請佇遮輸入文字! "
+msgstr "請佇遮輸入文字! "

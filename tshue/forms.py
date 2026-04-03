@@ -205,23 +205,32 @@ LMJ_CHOICES = [
 ]
 class SearchImikForm(forms.Form):
     inp = forms.CharField(
-        label=_("輸入文字"),
+        label=_("請佇遮輸入文字! "),
         max_length=100,
         widget=forms.TextInput(attrs={
-            'placeholder': _("請輸入要翻譯的文字"),
-            'style': 'width:300px;'
+            'class': 'form-control',
+            'id': 'imikInput',
+            'placeholder': _("請佇遮輸入文字! "),
         }),
         required=True,
     )
     lang = forms.ChoiceField(
-        label=_("語言"),
+        label=_("輸入"),
         choices=LANG_CHOICES,
         required=True,
-        widget=forms.Select
+        widget=forms.Select(attrs={
+            'class': 'form-select',
+            'id': 'imikLangSelect',
+            'aria-label': _("輸入"),
+        }),
     )
     lmjmod = forms.ChoiceField(
-        label=_("羅馬字系統"),
+        label=_("羅馬字類型(用佇台文輸出)"),
         choices=LMJ_CHOICES,
         required=True,
-        widget=forms.Select
+        widget=forms.Select(attrs={
+            'class': 'form-select',
+            'id': 'imikLmjmodSelect',
+            'aria-label': _("羅馬字類型(用佇台文輸出)"),
+        }),
     )

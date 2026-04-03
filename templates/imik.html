@@ -31,51 +31,59 @@
   <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
   <script src="/static/js/translation-form.js"></script>
-
-  <style>
-    .error { color: red; }
-    table, th, td { border: 1px solid #ccc; border-collapse: collapse; padding: 4px;}
-  </style>
 </head>
 <body id="body">
     <div class="container">
+      <div class="row">
+        <div class="my-3">
         {% include 'nav_tabs.html' %}
         {% block content %}
-        <h4 class="mt-1">{% trans 'Lohankha外來語音譯系統' %}</h4>
-        <p>Lohankha提供台語外來語音譯。請佇下跤輸入欲音譯成做台語的英語。
-        <form method="post" autocomplete="off">
+        <form class="mezzanine-form" method="post" autocomplete="off">
             {% csrf_token %}
-            <div>
-                <label for="{{ form.inp.id_for_label }}">{{ form.inp.label }}：</label>
+            <div class="row">
+              <div class="col-12 mb-3">
+                <h4 class="mt-1 mb-2">{% trans 'Lohankha外來語音譯系統' %}</h4>
+                <p class="text-body-secondary mb-0">{% trans 'Lohankha提供台語外來語音譯。請佇下跤輸入欲音譯成做台語的英語。' %}</p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="form-floating col-md-6 mb-3">
                 {{ form.inp }}
                 {% if form.inp.errors %}
-                    <span class="error">{{ form.inp.errors.0 }}</span>
+                <div class="invalid-feedback d-block">{{ form.inp.errors.0 }}</div>
                 {% endif %}
-            </div>
-            <div>
-                <label for="{{ form.lang.id_for_label }}">{{ form.lang.label }}：</label>
+                <label class="ps-4" for="{{ form.inp.id_for_label }}">{{ form.inp.label }}</label>
+              </div>
+              <div class="form-floating col-md-3 mb-3">
                 {{ form.lang }}
                 {% if form.lang.errors %}
-                    <span class="error">{{ form.lang.errors.0 }}</span>
+                <div class="invalid-feedback d-block">{{ form.lang.errors.0 }}</div>
                 {% endif %}
-            </div>
-            <div>
-                <label for="{{ form.lmjmod.id_for_label }}">{{ form.lmjmod.label }}：</label>
+                <label class="ps-4" for="{{ form.lang.id_for_label }}">{{ form.lang.label }}</label>
+              </div>
+              <div class="form-floating col-md-3 mb-3">
                 {{ form.lmjmod }}
                 {% if form.lmjmod.errors %}
-                    <span class="error">{{ form.lmjmod.errors.0 }}</span>
+                <div class="invalid-feedback d-block">{{ form.lmjmod.errors.0 }}</div>
                 {% endif %}
+                <label class="ps-4" for="{{ form.lmjmod.id_for_label }}">{{ form.lmjmod.label }}</label>
+              </div>
             </div>
-            <div>
-                <button type="submit">{% trans "翻譯" %}</button>
+            <div class="row g-2 mb-3">
+              <div class="col-6 col-md-1">
+                <button type="submit" class="btn btn-outline-secondary w-100">
+                  <i class="bi bi-translate"></i>
+                </button>
+              </div>
             </div>
         </form>
 
         {% if result.error %}
-            <p class="error">{{ result.error }}</p>
+            <div class="alert alert-danger" role="alert">{{ result.error }}</div>
         {% elif result.ok %}
-            <h4>{% trans "音譯結果" %}</h2>
-            <table>
+            <h4 class="mb-3">{% trans "音譯結果" %}</h4>
+            <div class="table-responsive mb-4">
+            <table class="table table-bordered table-striped align-middle mb-0">
                 <tr>
                     <th>{% trans "原詞" %}</th>
                     <th>{% trans "國際音標" %}</th>
@@ -89,9 +97,11 @@
                     <td>{{ result.lo }}</td>
                 </tr>
             </table>
+            </div>
             {% if result.sug %}
-                <h4>{% trans "推薦用詞" %}</h2>
-                <table>
+                <h4 class="mb-3">{% trans "推薦用詞" %}</h4>
+                <div class="table-responsive mb-4">
+                <table class="table table-bordered table-striped align-middle mb-0">
                     <tr>
                         <th>{% trans "譯詞" %}</th>
                         <th>{% trans "羅馬字" %}</th>
@@ -105,10 +115,12 @@
                     </tr>
                     {% endfor %}
                 </table>
+                </div>
             {% endif %}
             {% if result.ref %}
-                <h4>{% trans "文獻" %}</h2>
-                <table>
+                <h4 class="mb-3">{% trans "文獻" %}</h4>
+                <div class="table-responsive">
+                <table class="table table-bordered table-striped align-middle mb-0">
                     <tr>
                         <th>{% trans "譯詞" %}</th>
                         <th>{% trans "羅馬字" %}</th>
@@ -126,9 +138,12 @@
                         </tr>
                     {% endfor %}
                 </table>
+                </div>
             {% endif %}
         {% endif %}
         {% endblock %}
+        </div>
+      </div>
         {% include 'footer.html' %}
     </div>
 </body>

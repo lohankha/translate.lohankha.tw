@@ -217,3 +217,38 @@ msgstr "복사 대상이 비어 있습니다."
 msgid "Translation completed!"
 msgstr "번역 완료!"
 
+#: tshue/forms.py:213
+msgid "請佇遮輸入文字! "
+msgstr "여기에 텍스트를 입력해 주세요."
+
+#: templates/imik.html:13 templates/imik.html:45
+msgid "Lohankha外來語音譯系統"
+msgstr "Lohankha 외래어 음역 시스템"
+
+#: templates/imik.html:46
+msgid "Lohankha提供台語外來語音譯。請佇下跤輸入欲音譯成做台語的英語。"
+msgstr "Lohankha는 대만어 외래어 음역을 제공합니다. 아래에 대만어로 음역할 영어를 입력해 주세요."
+
+#: templates/imik.html:84
+msgid "音譯結果"
+msgstr "음역 결과"
+
+#: templates/imik.html:88
+msgid "原詞"
+msgstr "원어"
+
+#: templates/imik.html:89
+msgid "國際音標"
+msgstr "국제음성기호"
+
+#: templates/imik.html:90 templates/imik.html:106 templates/imik.html:125
+msgid "譯詞"
+msgstr "번역어"
+
+#: templates/imik.html:91 templates/imik.html:107 templates/imik.html:126
+msgid "羅馬字"
+msgstr "로마자"
+
+#: templates/nav_tabs.html:66
+msgid "外來語音譯"
+msgstr "외래어 음역"
